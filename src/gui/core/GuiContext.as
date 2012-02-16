@@ -129,13 +129,14 @@ package gui.core
 				// _invalidated.splice(0,uint.MAX_VALUE); // remove all for now
 
 				var timer:Number = getTimer();
+				var viewRect:Rectangle = getGlobalBounds();
 				
 				var renderQueue:Vector.<GuiRenderRequest> 	= new Vector.<GuiRenderRequest>();
-				var results:Vector.<QTreeData> 				= _qtree.find( this.getGlobalBounds() );
+				var results:Vector.<QTreeData> 				= _qtree.find( viewRect );
 				
 				var i:int;
 				var obj:GuiObject;
-				var viewRect:Rectangle = getGlobalBounds();
+				
 				var l:int = results.length;
 				var viewClip:Rectangle;
 				var guiRect:Rectangle;
@@ -155,6 +156,11 @@ package gui.core
 					else
 						viewClip = viewRect;
 					
+					if( clipChildren == false && viewClip == viewRect ) // skip extra intersection checking if the GuiContext root is not clipping. ( as area off stage / screen )
+					{
+						renderQueue.push(new GuiRenderRequest(obj,guiRect,null));
+						continue;
+					}
 					// check intersection.
 					intersect = viewClip.intersection(guiRect);
 					intersects = intersect.size.length != 0.0;

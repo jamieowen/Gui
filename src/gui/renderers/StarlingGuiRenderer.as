@@ -1,20 +1,16 @@
-package gui.renderers
-{
-	import flash.display.BitmapData;
-	import flash.display.Stage;
+package gui.renderers {
 	import gui.core.GuiContext;
 	import gui.render.GuiRenderRequest;
 	import gui.render.GuiRenderer;
 	import gui.utils.Factory;
 	import gui.utils.FactoryMap;
-	import starling.core.Starling;
+
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Image;
-	import starling.events.Event;
-	import starling.events.TouchEvent;
 	import starling.textures.Texture;
-	import starling.textures.TextureSmoothing;
+
+	import flash.display.BitmapData;
 
 
 	
@@ -23,46 +19,22 @@ package gui.renderers
 	 */
 	public class StarlingGuiRenderer extends GuiRenderer
 	{
-		private var _starling:Starling;
-		
 		private var factory:Factory;
 		
-		/**
-		 * Provides access to the Starling object.
-		 */
-		public function get starling():Starling
-		{
-			return _starling;
-		}
-		
-		
-		/**
-		 * Creates a Starling G
-		 */
-		public function StarlingGuiRenderer($context:GuiContext, $stage:Stage)
-		{
-			// Possibly pass a starling DisplayObjectContainer to the Renderer instead.
-			// The setup is too complicated and wrapping up a Starling instance prevents the GUI Renderer
-			// being used more easily by existing setups.
-			
-			_starling = new Starling(DisplayObjectContainer,$stage);
-			_starling.addEventListener( Event.CONTEXT3D_CREATE, _onStarlingStartupComplete );
-			_starling.start();
-			_starling.stage.addEventListener( TouchEvent.TOUCH, onTouchEvent );
-			factory = new Factory( new FactoryMap(Image) );
-			
-			super($context,_starling);
-		}
-		
-		override protected function startupComplete():void
-		{
-			// TEMP BITMAP.
-			texture 	= Texture.fromBitmapData( new BitmapData(100,100,false,0xFF000000) );
-			
-			super.startupComplete();
-		}
+		private var _root:DisplayObjectContainer;
 		
 		public var texture:Texture;
+		
+		public function StarlingGuiRenderer($context:GuiContext, $root:DisplayObjectContainer)
+		{
+			factory 	= new Factory( new FactoryMap(Image) );
+			_root 		= $root;
+			
+			texture 	= Texture.fromBitmapData( new BitmapData(100,100,false,0xFF000000) );
+			
+			super($context);
+		}
+		
 		
 		override public function render($queue:Vector.<GuiRenderRequest>):void
 		{
@@ -76,7 +48,7 @@ package gui.renderers
 				var item:GuiRenderRequest;
 				var image:Image;
 				
-				var root:DisplayObjectContainer = _starling.stage;
+				var root:DisplayObjectContainer = _root;
 				var display:DisplayObject;
 				
 				while( root.numChildren )
@@ -110,25 +82,11 @@ package gui.renderers
 					}
 
 					
-					_starling.stage.addChild( image );
+					_root.addChild( image );
 					
 				}
 			}
 			 
-		}
-		
-		protected function onTouchEvent( $event:TouchEvent ):void
-		{
-			//trace( $event  + " " + $event.target );
-		}
-		
-		// handlers
-		private function _onStarlingStartupComplete($event:Event):void
-		{
-			_starling.removeEventListener( Event.CONTEXT3D_CREATE, _onStarlingStartupComplete );
-			startupComplete();
-		}
-			
-			
+		}	
 	}
 }
