@@ -1,0 +1,21 @@
+# Build and Release Folders
+bin-debug/
+bin-release/
+
+# Project property files
+.actionScriptProperties
+.flexProperties
+.flexLibProperties
+.settings/
+.project
+
+# Eclipse
+.metadata
+
+# Other
+*.zip
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.ipa
