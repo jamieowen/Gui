@@ -46,16 +46,33 @@ package {
 			// turn off clipping on root.
 			gui.clipChildren = false;
 			
-			// add 50 padding to check clipping
+			// add 50 padding to show clipping effect
 			gui.x = gui.y 	= 50; 
 			
 			// renderer
 			starlingGui 	= new StarlingGuiRenderer(gui, (starling.stage.root as DisplayObjectContainer).getChildAt(0) as DisplayObjectContainer);
 			
+			customizeSkins();
 			addContent();
 			
 			// render
 			addEventListener( flash.events.Event.ENTER_FRAME, guiUpdate );
+		}
+		
+		protected function customizeSkins():void
+		{
+			// renderer would need to be configured with skins to display when it encounters each GuiObject
+			// renderer.skinMap.mapSkin( GuiBitmap, "logo", BitmapData );
+			
+			// new BitmapSkin( "logo", LogoBitmap, scale9Rect );
+			// new BitmapSkin( "backButton.up", BackButtonUp, scale9Rect );
+			// new BitmapSkin( "backButton.press", BackButtonPress, scale9Rect );
+			// new BitmapSkin( "backButton.down", BackButtonDown, scale9Rect );
+			
+			// new BitmapSkin( "myList.listItemBG", ListItemBG, scale9Rect );
+			
+			// Need some introduction of a TextureAtlas / BitmapSpriteSheet.
+					
 		}
 		
 		protected function addContent():void
@@ -67,13 +84,12 @@ package {
 			var bitmap2:GuiBitmap = new GuiBitmap();
 			bitmap2.width = bitmap2.height = 100;
 			bitmap2.skin = "background";
+			
 			bitmap2.x = bitmap2.y = 600;
 			
 			gui.addChild( bitmap );
 			gui.addChild( bitmap2 );
-			
-			// renderer would need to be configured with skins to display when it encounters each GuiObject
-			// renderer.skinMap.mapSkin( GuiBitmap, "logo", BitmapData );
+
 		}
 		
 		// handlers

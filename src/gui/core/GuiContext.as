@@ -156,7 +156,7 @@ package gui.core
 					else
 						viewClip = viewRect;
 					
-					if( clipChildren == false && viewClip == viewRect ) // skip extra intersection checking if the GuiContext root is not clipping. ( as area off stage / screen )
+					if( clipChildren == false && viewClip == viewRect ) // skip extra intersection checking if the GuiContext root is not clipping. ( as area is off stage / screen )
 					{
 						renderQueue.push(new GuiRenderRequest(obj,guiRect,null));
 						continue;

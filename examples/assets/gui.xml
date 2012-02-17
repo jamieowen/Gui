@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:ab9de6eb2eb347108ad29b45c792164c$ -->
+<TextureAtlas imagePath="gui.png">
+    <SubTexture name="black-button" x="2" y="2" width="60" height="60"/>
+    <SubTexture name="header-item" x="2" y="64" width="30" height="88"/>
+    <SubTexture name="list-item" x="96" y="2" width="30" height="88"/>
+    <SubTexture name="nav-bar" x="64" y="2" width="30" height="88"/>
+</TextureAtlas>
