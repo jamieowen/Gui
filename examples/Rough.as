@@ -1,27 +1,19 @@
 package   
 {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
+	import gui.core.GuiContext;
+	import gui.display.GuiBitmap;
+	import gui.display.GuiContainer;
+	import gui.indexing.QTreeNode;
+	import gui.renderers.StarlingGuiRenderer;
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
-	import gui.core.GuiContext;
-	import gui.display.GuiBitmap;
-	import gui.display.GuiContainer;
-	import gui.events.GuiRenderEvent;
-	import gui.indexing.QTree;
-	import gui.indexing.QTreeData;
-	import gui.indexing.QTreeNode;
-	import gui.renderers.StarlingGuiRenderer;
-	import net.hires.debug.Stats;
-	import starling.display.Image;
-	import starling.textures.Texture;
 	
 	
-	
+	// NOT WORKING ANYMORE ---- TO BE REMOVED..
 	
 	[SWF(width=1280,height=768,frameRate=60)]
 	public class Rough extends Sprite
@@ -42,12 +34,11 @@ package
 			guiContext.width 	= 320;
 			guiContext.height 	= 480;
 			
-			var stats:Stats = new Stats();
-			addChild(stats);
+			//var stats:Stats = new Stats();
+			//addChild(stats);
 			//drawQTreeNodes(qtreeTest.root);
 				
-			starlingRenderer = new StarlingGuiRenderer(guiContext,stage);
-			starlingRenderer.addEventListener(GuiRenderEvent.RENDERER_STARTUP_COMPLETE, onStarlingStartup );
+			//starlingRenderer = new StarlingGuiRenderer(guiContext,stage);
 			
 			
 		}

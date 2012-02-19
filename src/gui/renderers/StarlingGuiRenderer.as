@@ -1,41 +1,59 @@
-package gui.renderers {
+package gui.renderers 
+{
 	import gui.core.GuiContext;
 	import gui.render.GuiRenderRequest;
 	import gui.render.GuiRenderer;
+	import gui.renderers.starling.StarlingGuiBitmap;
 	import gui.utils.Factory;
 	import gui.utils.FactoryMap;
 
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
-	import starling.display.Image;
 	import starling.textures.Texture;
 
-	import flash.display.BitmapData;
 
 
 	
 	/**
-	 * Renders a GuiContext using Starling based GPU renderers.
+	 * Renders a GuiContext using Starling compatible IGuiObjectRenderers.
 	 */
 	public class StarlingGuiRenderer extends GuiRenderer
 	{
 		private var factory:Factory;
 		
-		private var _root:DisplayObjectContainer;
+		private var _starling:DisplayObjectContainer;
 		
-		public var texture:Texture;
+		// default texture to provide Starling Display Objects with
+		private var _defaultTexture:Texture;
 		
-		public function StarlingGuiRenderer($context:GuiContext, $root:DisplayObjectContainer)
+		public function get defaultTexture():Texture
 		{
-			factory 	= new Factory( new FactoryMap(Image) );
-			_root 		= $root;
-			
-			texture 	= Texture.fromBitmapData( new BitmapData(100,100,false,0xFF000000) );
+			return _defaultTexture;
+		}
+		
+		/**
+		 * The StarlingGuiRenderer renders a GuiContext to a Starling DisplayObjectContainer mapping
+		 * each GuiObject to a specific Starling compatible DisplayObject.
+		 * 
+		 * A default texture has to be passed to this class due to the way Starling expects a Texture
+		 * in some Starling DisplayObject's constructor.  This isn't ideal but is an easy workaround.
+		 * 
+		 * @param $context The GuiContext to render
+		 * @param $starling The root Starling DisplayObjectContainer to render to.
+		 * @param $defaultTexture Default texure to Starling DisplayObjects that require textures.
+		 */
+		public function StarlingGuiRenderer($context:GuiContext, $starling:DisplayObjectContainer, $defaultTexture:Texture)
+		{
+			factory 	= new Factory( new FactoryMap(StarlingGuiBitmap) );
+			_starling 		= $starling;
+			_defaultTexture = $defaultTexture;
 			
 			super($context);
 		}
 		
-		
+		/**
+		 * Render implementation for Starling container.
+		 */
 		override public function render($queue:Vector.<GuiRenderRequest>):void
 		{
 			if( requiresRender )
@@ -46,9 +64,9 @@ package gui.renderers {
 				var i:uint = 0;
 				var l:uint = $queue.length;
 				var item:GuiRenderRequest;
-				var image:Image;
+				var image:StarlingGuiBitmap;
 				
-				var root:DisplayObjectContainer = _root;
+				var root:DisplayObjectContainer = _starling;
 				var display:DisplayObject;
 				
 				while( root.numChildren )
@@ -62,28 +80,11 @@ package gui.renderers {
 				{
 					item = $queue[i++];
 					
-					// instantiate here - but call guiRenderer.render( request ) to position
-					image 			= factory.create(item, {texture:texture}, [texture]);
+					image 			= factory.create(item, {texture:_defaultTexture}, [_defaultTexture]);
 					
-					
-					if( item.clipRect )
-					{
-						//trace( "Clip : " + item.clipRect + " " + item.guiRect );
-						image.x 		= item.clipRect.x;
-						image.y 		= item.clipRect.y;
-						image.width 	= item.clipRect.width;
-						image.height 	= item.clipRect.height;						
-					}else
-					{
-						image.x 		= item.guiRect.x;
-						image.y 		= item.guiRect.y;
-						image.width 	= item.guiRect.width;
-						image.height 	= item.guiRect.height;
-					}
-
-					
-					_root.addChild( image );
-					
+					// passes control to renderer for positioning.
+					image.renderRequest(item, this);
+					root.addChild( image );
 				}
 			}
 			 

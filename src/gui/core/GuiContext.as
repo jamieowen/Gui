@@ -176,6 +176,8 @@ package gui.core
 				//trace( "Render : " + l + " of " + _qtree.numItems );
 				//trace( "time : " + (( getTimer()-timer )/1000).toFixed(3) + " " + l );
 				
+				// TODO Create a stats or render info object.
+				trace( "QTree Nodes: " + qtree.numNodes );
 				dispatchEvent( new GuiRenderEvent( GuiRenderEvent.RENDER,renderQueue ) );
 			}
 		}
