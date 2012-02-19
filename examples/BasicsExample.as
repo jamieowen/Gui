@@ -1,25 +1,19 @@
 package {
-	import gui.renderers.starling.display.Scale3;
-	import gui.renderers.starling.display.ScaleImage;
-	import flash.geom.Point;
-	import starling.display.Button;
-	import gui.renderers.starling.display.ImageScale3;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
-	import starling.display.DisplayObjectContainer;
-	import fr.kouma.starling.utils.Stats;
-
 	import gui.core.GuiContext;
 	import gui.display.GuiBitmap;
 	import gui.renderers.StarlingGuiRenderer;
+	import gui.renderers.starling.display.Scale3;
 
 	import starling.core.Starling;
+	import starling.display.DisplayObjectContainer;
 	import starling.display.Image;
 	import starling.events.Event;
 	import starling.text.BitmapFont;
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
