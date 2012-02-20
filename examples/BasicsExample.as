@@ -104,22 +104,19 @@ package {
 		
 		protected function customizeSkins():void
 		{
-			// renderer would need to be configured with skins to display when it encounters each GuiObject
-			// renderer.skinMap.mapSkin( GuiBitmap, "logo", BitmapData );
+			// var wireframe:Texture = new Texture();
 			
-			// new BitmapSkin( "logo", LogoBitmap, scale9Rect );
-			// new BitmapSkin( "backButton.up", BackButtonUp, scale9Rect );
-			// new BitmapSkin( "backButton.press", BackButtonPress, scale9Rect );
-			// new BitmapSkin( "backButton.down", BackButtonDown, scale9Rect );
+			// skins = SkinFactory
+			// renderer.skins.register( GuiObject, "*", StarlingGuiBitmap9, { texture:wireframe, scaleRect:new Rectangle(10,10,50,50) ) }, [ texture ] );
+			// renderer.skins.register( GuiBitmap, "globalBackground", StarlingGuiBitmap, { texture:background, clipping:true, repeat:true ) }, [ texture ] );
+			// renderer.skins.register( GuiTextField, "*", StarlingGuiTextField, { fontName:"Arial-Black", fontColor:0x000000 ) }, [ texture ] );
 			
-			// new BitmapSkin( "myList.listItemBG", ListItemBG, scale9Rect );
 			
-			// Need some introduction of a TextureAtlas / BitmapSpriteSheet.
+			// renderer.skins.setCache( StarlingGuiBitmap9, min, max );
+			// renderer.skins.setCache( StarlingGuiBitmap, min, max );
 			
-			// black-button
-			// list-item
-			// header-item
-			// nav-bar
+			// renderer.skins.create( fromGuiObject ):IGuiObjectRenderer
+			// renderer.skins.dispose( guiObjectSkin )
 			
 			// font
 			var ArialBlackT:Texture = Texture.fromBitmap( new ArialBlackPNG() as Bitmap ) as starling.textures.Texture; // FDT giving an error on Texture for some reason.. ( hence the long package ref )
@@ -133,23 +130,7 @@ package {
 			
 			var buttonTexture:Texture = uiAtlas.getTexture("black-button");
 			
-			var image:Image = new Image(buttonTexture);
-			
 			var container:DisplayObjectContainer = starling.stage.root as DisplayObjectContainer;
-			//container.addChild( image );
-			
-			trace( "w" + image.width + " " + image.scaleX );
-			image.scaleX = 1.7;
-			trace( "w" + image.width + " " + image.scaleX );
-			image.scaleX = 1;
-			trace( "w" + image.width + " " + image.scaleX );
-			
-			
-			var text:TextField = new TextField(100, 100, "Testing", "Arial-Black", BitmapFont.NATIVE_SIZE, 0xFFFFFF );
-			text.vAlign = VAlign.TOP;
-			text.hAlign = HAlign.LEFT;
-			text.x = 30;
-			text.y = 415;
 			
 			var scale3:Scale3 = new Scale3(buttonTexture,19,41);
 			container.addChild( scale3 );
@@ -162,8 +143,6 @@ package {
 			scale32.x = 0;
 			scale32.y = 461;
 			scale32.height = 400;
-			
-			container.addChild( text );
 		}
 
 		

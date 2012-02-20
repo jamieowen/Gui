@@ -1,10 +1,10 @@
 package {
+	import tests.suites.UtilsSuite;
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 	import org.fluint.uiImpersonation.VisualTestEnvironmentBuilder;
 
 	import flash.display.Sprite;
-	import test.SimpleTest;
 	
 	public class TestRunner extends Sprite {
 		private var core : FlexUnitCore;
@@ -28,7 +28,7 @@ package {
 			//You can also pass a Request Object, which allows you to sort, filter and subselect.
 			//var request:Request = Request.methods( someClass, ["method1", "method2", "method3"] ).sortWith( someSorter ).filterWith( someFilter );
 			//core.run( request );
-			core.run(SimpleTest);
+			core.run(UtilsSuite);
 		}
 	}
 }
