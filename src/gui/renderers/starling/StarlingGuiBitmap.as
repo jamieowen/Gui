@@ -4,12 +4,12 @@ package gui.renderers.starling
 	import gui.core.GuiObject;
 	import gui.render.GuiRenderer;
 	import gui.render.GuiRenderRequest;
-	import gui.render.IGuiObjectRenderer;
+	import gui.render.IGuiObjectSkin;
 	
 	import starling.display.Image;
 	import starling.textures.Texture;
 	
-	public class StarlingGuiBitmap extends Image implements IGuiObjectRenderer
+	public class StarlingGuiBitmap extends Image implements IGuiObjectSkin
 	{
 		public function StarlingGuiBitmap(texture:Texture)
 		{

@@ -7,8 +7,6 @@ package gui.render {
 	import flash.events.EventDispatcher;
 	import flash.utils.getQualifiedClassName;
 	
-	
-
 	/**
 	 * Simple base class for renderers.
 	 */
@@ -23,7 +21,6 @@ package gui.render {
 				throw new AbstractClassError();
 			
 			_context 	  = $context;
-			
 			_context.addEventListener(GuiRenderEvent.RENDER, onRender );
 		}
 		

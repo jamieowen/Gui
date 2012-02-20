@@ -1,21 +1,37 @@
 package tests.gui.utils {
-	import org.hamcrest.object.notNullValue;
 	import gui.utils.SkinFactoryMapping;
-	import org.hamcrest.object.instanceOf;
 	import gui.utils.SkinFactory;
 
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.async.Async;
 	import org.hamcrest.assertThat;
 	import org.hamcrest.object.hasProperty;
+
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	public class SkinFactoryTest 
 	{
-		public var factory:SkinFactory;
+		public static var factory:SkinFactory;
 		
-		[Test]
-		public function testRegisterMatchUnregister():void
+		[BeforeClass]
+		public static function setupFactory():void
 		{
 			factory = new SkinFactory();
+		}
+		
+		[AfterClass]
+		public static function removeFactory():void
+		{
+			factory.unregisterAll();
+			factory = null;
+		}
 			
+		[Test(order=1)]
+		public function testRegisterMappings():void
+		{
 			factory.register( "*", MatchAny ); // not the same as a wildcard - just a "default" class
 			factory.register( "button", ButtonClass );
 			factory.register( "button1,button2,button3", ButtonClass ); 
@@ -28,9 +44,16 @@ package tests.gui.utils {
 			factory.register( "myList.listItem", ListItemCustomClass ); // should override the normal listItem class.
 			factory.register( "myList.listItem.subItem", ListItemCustomSubClass );
 			
+			assertTrue( factory.numMappings == 10 );		
+		}
+		
+		
+		[Test(order=2)]
+		public function testMatch():void
+		{
 			// match any non-registered name
 
-			assertThat( factory.match("button"), org.hamcrest.object.hasProperty("cls", MatchAny));
+			assertThat( factory.match("button"), org.hamcrest.object.hasProperty("cls", ButtonClass));
 			
 			assertThat( factory.match("notRegistered1"), org.hamcrest.object.hasProperty("cls",MatchAny ));
 			assertThat( factory.match("notRegistered1.notRegistered2"), org.hamcrest.object.hasProperty("cls",MatchAny ));
@@ -66,6 +89,83 @@ package tests.gui.utils {
 			assertThat( factory.match("notRegistered.myList.listItem.subItem"), org.hamcrest.object.hasProperty("cls",ListItemCustomSubClass ));
 			assertThat( factory.match("notRegistered1.notRegistered2.myList.listItem.subItem"), org.hamcrest.object.hasProperty("cls",ListItemCustomSubClass ));
 		}
+		
+		[Test(order=3)]
+		public function testUnregister():void
+		{
+			// unregister
+			factory.unregister( "*" ); 
+			factory.unregister( "button" );
+			factory.unregister( "button1,button2,button3" ); 
+			
+			factory.unregister( "customContainer.button" ); 
+			
+			factory.unregister( "listItem" );
+			factory.unregister( "listItem.subItem" );
+			
+			factory.unregister( "myList.listItem" );
+			factory.unregister( "myList.listItem.subItem" );
+
+			assertTrue( factory.numMappings == 0 );
+		}
+		
+		/***
+		 * Tests unregistering and registering over time every frame. - To Run through the profiler.
+		 * Expects the frameRate of the FlexUnit base class to be at 60fps.
+		 *  
+		 * Will not be usual usage but testing this for memory reasons anyway.
+		 */
+		[Test(order=4,async)]
+		public function testBruteRegisterUnregisterOverTime():void
+		{
+			var bruteCount:uint = 500; // number of mappings unmappings per frame
+			var bruteRepeat:uint = 100; // register unregister count in frames
+					
+			var r:uint = 0;
+			var i:uint = 0;
+				
+			var name:String;
+			
+			var n:uint = 0;
+			var nl:uint;
+			
+			var frameTest:Function = function( $ev:Event ):void
+			{
+				if( r >= bruteRepeat )
+				{
+					( $ev.target as EventDispatcher ).removeEventListener( TimerEvent.TIMER, frameTest);
+				}
+				
+				trace( "Map/Unmap : " + r + "/" + bruteRepeat );
+				
+				r++;
+				i = 0;
+				while( i<bruteCount )
+				{
+					n = 0;
+					nl = Math.floor( (Math.random()*4) + 1 ); 
+					name = "root";
+					while(n++<nl) // create nested names
+						name+=".item" + Math.floor(Math.random()*1000000).toString(); 
+					
+					factory.register( name, MatchAny );
+				}
+				assertTrue( factory.numMappings == bruteCount );
+				factory.unregisterAll();
+				assertTrue( factory.numMappings == 0 );
+					
+			};
+		
+			var timer:Timer = new Timer(1000/60,bruteRepeat);
+			timer.addEventListener(TimerEvent.TIMER, frameTest );
+			
+			Async.proceedOnEvent(this, timer, TimerEvent.TIMER_COMPLETE, Number.MAX_VALUE );
+			timer.start();
+		}
+		
+
+		
+
 	}
 }
 

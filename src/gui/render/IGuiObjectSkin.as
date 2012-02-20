@@ -1,6 +1,6 @@
 package gui.render
 {
-	public interface IGuiObjectRenderer
+	public interface IGuiObjectSkin
 	{
 		function renderRequest( $request:GuiRenderRequest, $renderer:GuiRenderer ):void;
 	}
