@@ -1,5 +1,6 @@
 package tests.gui.utils {
-	import gui.utils.SkinFactoryMapping;
+	import flash.system.System;
+	import gui.render.IGuiObjectSkin;
 	import gui.utils.SkinFactory;
 
 	import org.flexunit.asserts.assertTrue;
@@ -7,11 +8,23 @@ package tests.gui.utils {
 	import org.hamcrest.assertThat;
 	import org.hamcrest.object.hasProperty;
 
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
+	/**
+	 * Tests the SkinFactory with the following :
+	 * 
+	 * 1. Registering mappings.
+	 * 2. Matching patterns to those mappings.
+	 * 3. Unregistering all mappings individually.
+	 * 4. Register and unregister over time to test GC. ( view in profiler )
+	 * 5. Instantiating matched classes and disposing over time with and without cache. ( view in profiler )
+	 * 
+	 */
 	public class SkinFactoryTest 
 	{
 		public static var factory:SkinFactory;
@@ -116,10 +129,10 @@ package tests.gui.utils {
 		 * Will not be usual usage but testing this for memory reasons anyway.
 		 */
 		[Test(order=4,async)]
-		public function testBruteRegisterUnregisterOverTime():void
+		public function testRegisterUnregisterOverTime():void
 		{
-			var bruteCount:uint = 500; // number of mappings unmappings per frame
-			var bruteRepeat:uint = 100; // register unregister count in frames
+			var repeatNumFrames:uint = 100; // register unregister count in frames
+			var numMappings:uint = 1;//500; // number of mappings unmappings per frame
 					
 			var r:uint = 0;
 			var i:uint = 0;
@@ -128,19 +141,14 @@ package tests.gui.utils {
 			
 			var n:uint = 0;
 			var nl:uint;
+			var time:Number;
+			var patterns:Vector.<String> = new Vector.<String>();
 			
-			var frameTest:Function = function( $ev:Event ):void
+			var enterFrame:Function = function( $ev:Event ):void
 			{
-				if( r >= bruteRepeat )
-				{
-					( $ev.target as EventDispatcher ).removeEventListener( TimerEvent.TIMER, frameTest);
-				}
-				
-				trace( "Map/Unmap : " + r + "/" + bruteRepeat );
-				
-				r++;
 				i = 0;
-				while( i<bruteCount )
+				
+				while( i++<numMappings )
 				{
 					n = 0;
 					nl = Math.floor( (Math.random()*4) + 1 ); 
@@ -148,21 +156,135 @@ package tests.gui.utils {
 					while(n++<nl) // create nested names
 						name+=".item" + Math.floor(Math.random()*1000000).toString(); 
 					
-					factory.register( name, MatchAny );
+					patterns.push( name ); 
 				}
-				assertTrue( factory.numMappings == bruteCount );
-				factory.unregisterAll();
-				assertTrue( factory.numMappings == 0 );
+				
+				// sort() method in factory.register() is v. slow. 
+				// this would need some changes if large amounts of registering is happening.
+				// usually this will happen once though at app startup.
+				
+				i=0;
+				time = getTimer();
+				while(i<numMappings)
+					factory.register(patterns[i++], MatchAny );
 					
+				assertTrue( factory.numMappings == numMappings );
+				factory.unregisterAll();
+				time = getTimer()-time;
+				assertTrue( factory.numMappings == 0 );
+				
+				trace( "Map/Unmap : " + r + "/" + repeatNumFrames + " (" + (time/1000) + " secs)" );
+				
+				if( r >= repeatNumFrames )
+				{
+					( $ev.target as EventDispatcher ).removeEventListener( TimerEvent.TIMER, enterFrame);
+					trace( "End Map/Unmap");
+					return;
+				}
 			};
 		
-			var timer:Timer = new Timer(1000/60,bruteRepeat);
-			timer.addEventListener(TimerEvent.TIMER, frameTest );
+			var timer:Timer = new Timer(1000/60,repeatNumFrames);
+			timer.addEventListener(TimerEvent.TIMER, enterFrame );
 			
 			Async.proceedOnEvent(this, timer, TimerEvent.TIMER_COMPLETE, Number.MAX_VALUE );
 			timer.start();
 		}
 		
+		/**
+		 * Runs and tests creation and disposal.  First without caching, then with.
+		 */
+		[Test(order=5,async)]
+		public function testCreateDisposeOverTime():void
+		{
+			var repeatNumFrames:uint = 100; // number of frames to repeat.
+			
+			var numObjectsNoCache:uint 	= 2000;
+			var numObjectsCache:uint 	= 2000; // create and dispose every frame with no cache limit set ( all items cached )
+			
+			var testedNoCache:Boolean = false; // to switch over to with cache.
+			var currentFrame:uint 	  = 0;
+			var i:uint;
+			var time:Number;
+			
+			// some bitmap data to pass to the skin.
+			var bitmapData:BitmapData = new BitmapData(100, 100);
+			// create single mapping. // with args..
+			var pattern:String = "cacheTest";
+			factory.register( pattern, GuiObjectSkinTest, {test1:"Testing",test2:123,testBitmap:bitmapData } );
+			factory.setCacheLimit( GuiObjectSkinTest, 0);
+			
+			var _objs:Vector.<IGuiObjectSkin> = new Vector.<IGuiObjectSkin>();
+			var obj:GuiObjectSkinTest;
+			
+			var enterFrame:Function = function( $event:Event ):void
+			{
+
+				if( currentFrame++ >= repeatNumFrames )
+				{
+					testedNoCache = true;
+					factory.setCacheLimit( GuiObjectSkinTest, uint.MAX_VALUE );
+					currentFrame = 1;
+				}
+					
+				if( !testedNoCache )
+				{
+					i = 0;
+					time = getTimer();
+					while(i++<numObjectsNoCache)
+					{
+						obj = factory.create(pattern) as GuiObjectSkinTest;
+						_objs.push(obj);
+					}
+					i=0;
+					while(i++<numObjectsNoCache)
+					{
+						factory.dispose( _objs.pop() );
+					}
+					
+					time = getTimer()-time;
+					trace( "Create/Dispose Uncache: " + currentFrame + "/" + repeatNumFrames + " (" + (time/1000) + " secs)" );
+				}else
+				{
+					i = 0;
+					time = getTimer();
+					while(i++<numObjectsCache)
+					{
+						obj = factory.create(pattern) as GuiObjectSkinTest;
+						_objs.push(obj);
+					}
+					i=0;
+					while(i++<numObjectsCache)
+					{
+						factory.dispose( _objs.pop() );
+					}
+					time = getTimer()-time;
+					
+					trace( "Create/Dispose Cache: " + currentFrame + "/" + repeatNumFrames + " (" + (time/1000) + " secs)" );
+				}
+				
+				// cleanup
+				if( currentFrame >= repeatNumFrames && testedNoCache )
+				{
+					factory.unregisterAll();
+					bitmapData.dispose();
+					_objs.splice(0, uint.MAX_VALUE);
+					
+					factory.disposeAllCache();
+					trace( "End Create/Dispose");
+					( $event.target as EventDispatcher ).removeEventListener( TimerEvent.TIMER, enterFrame);
+					
+					// trigger a gc
+					System.gc();
+				}
+			};
+			
+			
+			var timer:Timer = new Timer(1000/60,repeatNumFrames*2);
+			timer.addEventListener(TimerEvent.TIMER, enterFrame );
+			
+			Async.proceedOnEvent(this, timer, TimerEvent.TIMER_COMPLETE, Number.MAX_VALUE );
+			timer.start();
+		}
 
 		
 
