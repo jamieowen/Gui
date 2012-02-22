@@ -1,7 +1,8 @@
-package gui.indexing
+package gui.indexing.qtree
 {
-	import flash.text.engine.ElementFormat;
 	import flash.geom.Rectangle;
+	import flash.text.engine.ElementFormat;
+	import gui.indexing.QTree;
 	/**
 	 * @author jamieowen
 	 */

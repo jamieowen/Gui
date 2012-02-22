@@ -1,23 +1,21 @@
 package gui.core
 {
-	import gui.indexing.QTreeData;
-	import gui.indexing.QTreeNode;
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
-	
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
+	import gui.indexing.qtree.QTreeData;
+	import gui.indexing.qtree.QTreeNode;
+	
 	
 	/**
 	 * Base class for all GuiObjects to inherit from.
 	 */
 	public class GuiObject
 	{
-		internal var qdata:QTreeData;
-		
 		private var _name:String;
 		private var _skin:String;
 		private var _data:*;

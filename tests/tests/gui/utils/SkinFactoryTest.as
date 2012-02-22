@@ -156,7 +156,7 @@ package tests.gui.utils {
 					while(n++<nl) // create nested names
 						name+=".item" + Math.floor(Math.random()*1000000).toString(); 
 					
-					patterns.push( name ); 
+					patterns.push( name );
 				}
 				
 				// sort() method in factory.register() is v. slow. 

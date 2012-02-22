@@ -4,6 +4,7 @@ package gui.utils
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 
+	// TODO Phase out this class. and FactoryMap 
 	public class Factory
 	{
 		private var _map:FactoryMap;

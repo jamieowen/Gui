@@ -1,4 +1,4 @@
-package gui.indexing {
+package gui.indexing.qtree {
 	import flash.geom.Rectangle;
 	
 	/**

@@ -1,17 +1,19 @@
 package gui.core
 {
-	import gui.indexing.QTreeData;
-	import gui.indexing.QTree;
+	import gui.indexing.NoIndexer;
+	import gui.indexing.IGuiIndexer;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
-	
 	import gui.events.GuiEvent;
 	import gui.events.GuiRenderEvent;
+	import gui.indexing.QTree;
+	import gui.indexing.qtree.QTreeData;
 	import gui.render.GuiRenderRequest;
+	
 
 	/**
 	 * Dispatched when a GuiObject is added to this context.
@@ -55,23 +57,22 @@ package gui.core
 		/** Indicates that the invalidated objects need processing and to notify renderers if needed. **/
 		private var _invalid:Boolean = false;
 			
-		private var _qtree:QTree;
+		/** The spatial indexing used for the context**/
+		private var _indexer:IGuiIndexer;
 		
-		public function get qtree():QTree
+		public function get indexer():IGuiIndexer
 		{
-			return _qtree; 
+			return _indexer; 
 		}
 		
-		public function GuiContext()
+		public function GuiContext($indexer:IGuiIndexer=null)
 		{
 			super();
 			
-			_qtree = new QTree(new Rectangle(0,0,4000000,4000000), (320*480)*4 );
-			
+			_indexer = ( $indexer == null ) ? new NoIndexer():$indexer;
 			// add a data item for this - we may remove this - GuiContext may be should not be extending GuiObjectContainer
 			// required, otherwise we receive events from the GuiContext.
-			qdata = new QTreeData(this, getGlobalBounds());
-			_qtree.add(qdata);
+			_indexer.add(this);
 			
 			_eventDispatcher = new EventDispatcher(this);
 			
@@ -103,13 +104,11 @@ package gui.core
 		protected function invalidate( $child:GuiObject ):void
 		{
 			_invalid = true;
-			
 			return;
 			
 			if( _invalidated.indexOf( $child ) == -1 )
 			{
 				_invalidated.push( $child );
-				
 				_invalid = true;
 			}
 		}
@@ -132,7 +131,9 @@ package gui.core
 				var viewRect:Rectangle = getGlobalBounds();
 				
 				var renderQueue:Vector.<GuiRenderRequest> 	= new Vector.<GuiRenderRequest>();
-				var results:Vector.<QTreeData> 				= _qtree.find( viewRect );
+				
+				//TODO Update GuiContext to support new return from Indexer.
+				var results:Vector.<QTreeData>;// 				= _indexer.find( viewRect );
 				
 				var i:int;
 				var obj:GuiObject;
@@ -177,7 +178,7 @@ package gui.core
 				//trace( "time : " + (( getTimer()-timer )/1000).toFixed(3) + " " + l );
 				
 				// TODO Create a stats or render info object.
-				trace( "QTree Nodes: " + qtree.numNodes );
+				// trace( "QTree Nodes: " + qtree.numNodes );
 				dispatchEvent( new GuiRenderEvent( GuiRenderEvent.RENDER,renderQueue ) );
 			}
 		}
@@ -191,9 +192,7 @@ package gui.core
 		{
 			//trace( "Added : " + $event.guiObject );
 			var gui:GuiObject 	= $event.guiObject;
-			gui.qdata 			= new QTreeData(gui, gui.getGlobalBounds() );
-			_qtree.add( gui.qdata );
-			
+			_indexer.add( gui );
 			invalidate( gui );
 		}
 	
@@ -206,9 +205,7 @@ package gui.core
 			trace( "Removed : " + $event.guiObject );
 			
 			var gui:GuiObject 	= $event.guiObject;
-			_qtree.remove( gui.qdata );
-			gui.qdata 			= null;
-			
+			_indexer.remove( gui );
 			invalidate( gui );
 		}
 		
@@ -219,9 +216,8 @@ package gui.core
 		protected function onResized( $event:GuiEvent ):void
 		{
 			trace( "Resize : " + $event.guiObject );
-			
 			var gui:GuiObject 	= $event.guiObject;
-			_qtree.update( gui.qdata, gui.getGlobalBounds() );
+			_indexer.update( gui, gui.getGlobalBounds() );
 			invalidate( gui );
 		}
 		
@@ -234,7 +230,7 @@ package gui.core
 			//trace( "Moved : " + $event.guiObject );
 			
 			var gui:GuiObject 	= $event.guiObject;
-			_qtree.update( gui.qdata, gui.getGlobalBounds() );
+			_indexer.update( gui, gui.getGlobalBounds() );
 			invalidate( gui );
 		}
 		
@@ -247,7 +243,7 @@ package gui.core
 			//trace( "Scroll : " + $event.guiObject );
 
 			var gui:GuiObject 	= $event.guiObject;
-			_qtree.update( gui.qdata, gui.getGlobalBounds() );
+			_indexer.update( gui, gui.getGlobalBounds() );
 			var cont:GuiObjectContainer = gui as GuiObjectContainer;
 			invalidate( gui );
 			

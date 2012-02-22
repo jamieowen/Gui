@@ -1,11 +1,18 @@
 package gui.indexing 
 {
+	import gui.core.GuiContext;
+	import flash.utils.Dictionary;
+	import gui.render.GuiRenderRequest;
+	import gui.core.GuiObject;
 	import flash.geom.Rectangle;
+	import gui.indexing.qtree.QTreeData;
+	import gui.indexing.qtree.QTreeNode;
 	/**
 	 * @author jamieowen
 	 */
-	public class QTree
+	public class QTree implements IGuiIndexer
 	{
+		private var _guiToQTree:Dictionary;
 		private var _root:QTreeNode;
 		private var _minSize:Number;
 		
@@ -33,26 +40,40 @@ package gui.indexing
 		{
 			_root = new QTreeNode($rectangle,null,this);
 			_minSize = $minSize;
+			
+			_guiToQTree = new Dictionary(true);
 		}
 		
-		public function add( $data:QTreeData ):void
+		public function add( $data:GuiObject ):void
 		{
-			_root.add( $data );
+			// TODO Check duplicates?
+			var qdata:QTreeData = new QTreeData($data, $data.getGlobalBounds() );  
+			_guiToQTree[$data] = qdata; 
+			_root.add( qdata );
 		}
 		
-		public function remove( $data:QTreeData ):void
+		public function remove( $data:GuiObject ):void
 		{
-			_root.remove( $data );
+			var qdata:QTreeData = _guiToQTree[ $data ];
+			_root.remove( qdata );
 		}
 		
-		public function update( $data:QTreeData, $updated:Rectangle ):void
+		public function removeAll():void
 		{
-			_root.update( $data, $updated );
+			// TODO Implement removeAll() in QTree
 		}
 		
-		public function find( $rect:Rectangle ):Vector.<QTreeData>
+		public function update( $data:GuiObject, $updated:Rectangle ):void
 		{
-			return _root.find( $rect );
+			var qdata:QTreeData = _guiToQTree[ $data ];
+			_root.update( qdata, $updated );
+		}
+		
+		public function find( $rect:Rectangle ):Vector.<GuiRenderRequest>
+		{
+			//TODO Solution to abstract out the GuiRenderRequest. to pass clipping rect generation to quad tree.
+			//return _root.find( $rect );
+			return null;
 		}
 	
 	}

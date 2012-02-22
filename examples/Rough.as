@@ -1,16 +1,16 @@
 package   
 {
-	import gui.core.GuiContext;
-	import gui.display.GuiBitmap;
-	import gui.display.GuiContainer;
-	import gui.indexing.QTreeNode;
-	import gui.renderers.StarlingGuiRenderer;
-
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import gui.core.GuiContext;
+	import gui.display.GuiBitmap;
+	import gui.display.GuiContainer;
+	import gui.indexing.qtree.QTreeNode;
+	import gui.renderers.StarlingGuiRenderer;
+
 	
 	
 	// NOT WORKING ANYMORE ---- TO BE REMOVED..
@@ -96,9 +96,9 @@ package
 			}
 			trace( "bitmap y extent : " + bitmap.y );
 
-			trace( "QTree Nodes: " + guiContext.qtree.numNodes );
-			if( guiContext.qtree.root.items )
-				trace( "Root Items : " + guiContext.qtree.root.items.length );
+			//trace( "QTree Nodes: " + guiContext.qtree.numNodes );
+			//if( guiContext.qtree.root.items )
+			//	trace( "Root Items : " + guiContext.qtree.root.items.length );
 			addEventListener( Event.ENTER_FRAME, onEnterFrame );
 		}
 		
