@@ -72,8 +72,7 @@ package gui.indexing
 		public function find( $rect:Rectangle ):Vector.<GuiRenderRequest>
 		{
 			//TODO Solution to abstract out the GuiRenderRequest. to pass clipping rect generation to quad tree.
-			//return _root.find( $rect );
-			return null;
+			return _root.find( $rect );
 		}
 	
 	}

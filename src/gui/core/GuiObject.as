@@ -1,14 +1,12 @@
-package gui.core
-{
+package gui.core {
+	import gui.errors.AbstractClassError;
+	import gui.events.GuiEvent;
+
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
-	import gui.errors.AbstractClassError;
-	import gui.events.GuiEvent;
-	import gui.indexing.qtree.QTreeData;
-	import gui.indexing.qtree.QTreeNode;
 	
 	
 	/**

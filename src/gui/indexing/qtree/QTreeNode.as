@@ -1,7 +1,7 @@
 package gui.indexing.qtree
 {
+	import gui.render.GuiRenderRequest;
 	import flash.geom.Rectangle;
-	import flash.text.engine.ElementFormat;
 	import gui.indexing.QTree;
 	/**
 	 * @author jamieowen
@@ -58,6 +58,30 @@ package gui.indexing.qtree
 				var i:int = 0;
 				while( i<4 )
 					sub = sub.concat( nodes[i++].subItems );
+			}
+			
+			return sub;
+		}
+		
+		public function get subItemsGuiRequest():Vector.<GuiRenderRequest>
+		{
+			var sub:Vector.<GuiRenderRequest> = new Vector.<GuiRenderRequest>();
+			
+			var l:uint = items.length;
+			var i:uint = 0;
+			var item:QTreeData;
+			
+			while( i<l )
+			{
+				item = items[i++];
+				sub.push( new GuiRenderRequest(item.data, item.rect));
+			}
+			
+			if( nodes )
+			{
+				i = 0;
+				while( i<4 )
+					sub = sub.concat( nodes[i++].subItemsGuiRequest );
 			}
 			
 			return sub;
@@ -166,23 +190,34 @@ package gui.indexing.qtree
 			//add( $data );
 		}
 		
-		public function find( $rect:Rectangle ):Vector.<QTreeData>
+		public function find( $rect:Rectangle, $calculateClipping:Boolean = false ):Vector.<GuiRenderRequest>
 		{
-			var results:Vector.<QTreeData> = new Vector.<QTreeData>();
+			var results:Vector.<GuiRenderRequest> = new Vector.<GuiRenderRequest>();
 		
 			var i:int = 0;
 			var item:QTreeData;
 			
-			var l:uint = 0;
-			if( items ) l = items.length;
+			var l:uint = 0; 
+			var req:GuiRenderRequest; // TODO look at decoupling the quad tree from the GuiRenderRequest / or rename..
+			var intersection:Rectangle;
+			
+			// TODO guiRect results should offset by viewport scrolling.. look into.
+			// TODO Lots of optimizations needed in this class in general - particulary how it integrates with the GuiRenderRequest object.
 			
 			if( items )
 			{
+				l = items.length;
+				
 				while( i<items.length )
 				{
 					item = items[i++];
-					if( item.rect.intersects($rect) )
-						results.push( item );
+					intersection = item.rect.intersection($rect);
+					
+					if( intersection.width != 0.0 && intersection.height != 0.0 )
+					{
+						req = new GuiRenderRequest(item.data, item.rect, intersection.equals(item.rect) ? null : intersection );
+						results.push( req );
+					}
 				}
 			}
 			
@@ -204,7 +239,7 @@ package gui.indexing.qtree
 					{
 						if( node.items )
 						{
-							results = results.concat( node.subItems );
+							results = results.concat( node.subItemsGuiRequest );
 							continue;
 						}
 					}
