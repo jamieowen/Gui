@@ -8,7 +8,7 @@ package {
 
 	import flash.display.Sprite;
 	
-	[SWF(frameRate=60)]
+	[SWF(frameRate=60,width=1280,height=1024)]
 	public class TestRunner extends Sprite {
 		private var core : FlexUnitCore;
 

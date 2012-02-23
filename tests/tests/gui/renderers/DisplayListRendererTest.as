@@ -1,23 +1,30 @@
-package tests.gui.render
-{
-	import flash.utils.getTimer;
-	import org.flexunit.asserts.assertTrue;
-	import org.flexunit.async.Async;
-	import tests.helpers.IndexerTestDataHelper;
-	import flash.geom.Point;
-	import tests.helpers.TestGuiObject;
-	import tests.gui.renderers.GuiRendererTestImplSkin;
+package tests.gui.renderers {
 	import gui.core.GuiContext;
-	import tests.gui.renderers.GuiRendererTestImpl;
+	import gui.renderers.DisplayListRenderer;
+	import gui.renderers.displaylist.DisplayListGuiBitmap;
+
+	import tests.helpers.IndexerTestDataHelper;
+	import tests.helpers.TestGuiObject;
+
+	import org.flexunit.asserts.assertTrue;
+	import org.fluint.uiImpersonation.UIImpersonator;
+
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
+	import flash.geom.Point;
+	import flash.utils.getTimer;
 	/**
 	* Test Description
 	*
 	* @author jamieowen
 	*/
-	public class GuiRendererTest 
+	public class DisplayListRendererTest 
 	{
 		public static var context:GuiContext;
-		public static var renderer:GuiRendererTestImpl;
+		public static var renderer:DisplayListRenderer;
+		
+		// THE TESTING FUNCTIONS CAN REALLY BE MOVED TO A BASE CLASS - AS WE DID WITH INDEXER TESTS.
+		// WE ONLY HAVE TO DEFINE THE RENDERER AND CONTEXT IN THE STATIC METHODS BELOW.
 		
 		/**
 		 * 
@@ -25,10 +32,15 @@ package tests.gui.render
 		[BeforeClass]
 		public static function initialise():void
 		{
-			context  = new GuiContext();
-			renderer = new GuiRendererTestImpl(context);
+			var sprite:Sprite = new Sprite();
+			UIImpersonator.addChild(sprite);
 			
-			renderer.skins.register(TestGuiObject.DEFAULT_SKIN_NAME, GuiRendererTestImplSkin);
+			context  = new GuiContext();
+			renderer = new DisplayListRenderer(context, sprite);
+			
+			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
+			
+			renderer.skins.register(TestGuiObject.DEFAULT_SKIN_NAME, DisplayListGuiBitmap, {bitmapData:bitmap});
 		}
 
 		/**
@@ -68,7 +80,7 @@ package tests.gui.render
 		public function addObjectsToContext():void
 		{ 
 			var count:Point = new Point();
-			var depth:uint = 6;
+			var depth:uint = 4;
 			// renderer should pick up changes.
 			IndexerTestDataHelper.create4Square(context, IndexerTestDataHelper.SQUARE_SMALL_SIZE, IndexerTestDataHelper.SQUARE_SMALL_PADDING, 0, depth, count);
 			var total:uint = count.x + count.y;
@@ -86,8 +98,11 @@ package tests.gui.render
 			assertTrue( "attached do not match", count.y == renderer.stats.attached );
 			assertTrue( "existing do not match", 0 == renderer.stats.existing ); 
 			assertTrue( "released do not match",0 == renderer.stats.released );
-			
-			
+		}
+		
+		[Test(order=2)]
+		public function removeObjectsFromContext():void
+		{
 			
 		}
 			
