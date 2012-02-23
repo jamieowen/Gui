@@ -1,7 +1,7 @@
 package tests.suites {
-	import tests.gui.indexing.RectangleTest;
-	import tests.gui.indexing.QTreeTest;
 	import tests.gui.indexing.NoIndexerTest;
+	import tests.gui.indexing.QTreeTest;
+	import tests.gui.indexing.RectangleTest;
 	
 	[Suite]
 	[RunWith("org.flexunit.runners.Suite")]

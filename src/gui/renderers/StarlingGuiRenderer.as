@@ -54,7 +54,7 @@ package gui.renderers
 		/**
 		 * Render implementation for Starling container.
 		 */
-		override public function render($queue:Vector.<GuiRenderRequest>):void
+		override protected function render($queue:Vector.<GuiRenderRequest>):void
 		{
 			if( requiresRender )
 			{

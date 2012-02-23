@@ -55,6 +55,7 @@ package gui.render {
 			if (getQualifiedClassName(this) == "gui.render::GuiRendererBase")
 				throw new AbstractClassError();
 			
+			_stats		 = new RendererStats();
 			_skinFactory = $skinFactory == null ? new SkinFactory() : new $skinFactory();
 			
 			_context 	  = $context;
@@ -66,7 +67,7 @@ package gui.render {
 		 * 
 		 * @param $queue The GuiRenderRequest items to be rendered. 
 		 */
-		public function render( $queue:Vector.<GuiRenderRequest> ):void
+		protected function render( $queue:Vector.<GuiRenderRequest> ):void
 		{
 			throw new AbstractMethodError();
 		}
@@ -80,6 +81,17 @@ package gui.render {
 			requiresRender = true;
 			render($event.queue);
 		}
+		
+		/**
+		 * Disposes of the Renderer.
+		 */
+		public function dispose():void
+		{
+			_skinFactory.disposeAllCache();
+			_skinFactory = null;
+			_context = null;
+			_stats = null;
+		}
 	}
 }
 
@@ -90,15 +102,17 @@ internal class RendererStats
 {
 	// the total items passed to the renderer
 	public var total:uint;
-	// the total items already present on the screen
+	// number of items already on screen.
 	public var existing:uint;
-	// the total items present from the last render that have now been removed 
-	public var clipped:uint;
-	// the total items added that weren't present last render
-	public var unclipped:uint;
+	// new items that weren't on screen before
+	public var attached:uint;
+	// items that have now been removed
+	public var released:uint;
+	// the number of containers 
+	public var numContainers:uint;
 	
-	internal function reset():void
+	public function reset():void
 	{
-		total = existing = clipped = unclipped = 0;
+		total = existing = attached = released = numContainers = 0;
 	}
 }

@@ -73,7 +73,7 @@ package gui.indexing
 				// Rectangle(xx,xx,xx,xx) for intersection 
 				if( intersect.width != 0.0 || intersect.height != 0.0 )
 				{
-					req = new GuiRenderRequest(key as GuiObject, rect, intersect );
+					req = new GuiRenderRequest(key as GuiObject, rect, intersect.equals(rect) ? null : intersect );
 					results.push( req );
 				}
 			}

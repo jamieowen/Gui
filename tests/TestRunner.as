@@ -1,4 +1,5 @@
 package {
+	import tests.suites.RendererSuite;
 	import tests.suites.IndexerSuite;
 	import tests.suites.UtilsSuite;
 	import org.flexunit.internals.TraceListener;
@@ -32,7 +33,9 @@ package {
 			//core.run( request );
 			
 			//core.run(UtilsSuite);
-			core.run(IndexerSuite);
+			//core.run(IndexerSuite);
+			
+			core.run(RendererSuite);
 		}
 	}
 }

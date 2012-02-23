@@ -1,4 +1,5 @@
 package tests.gui.utils {
+	import gui.core.GuiObject;
 	import flash.display.Sprite;
 	import flash.display.BitmapData;
 	import gui.render.IGuiObjectSkin;
@@ -10,7 +11,7 @@ package tests.gui.utils {
 	 * 
 	 * @author jamieowen
 	 */
-	public class GuiObjectSkinTest extends Sprite implements IGuiObjectSkin
+	public class SkinFactoryTestSkin extends Sprite implements IGuiObjectSkin
 	{
 		// add some extra props.
 		public var vec:Vector.<Number>;
@@ -20,13 +21,15 @@ package tests.gui.utils {
 		public var test2:Number;
 		public var testBitmap:BitmapData;
 		 
-		public function GuiObjectSkinTest()
+		public function SkinFactoryTestSkin()
 		{
 			vec = new Vector.<Number>(20,true);
 		}
 		
 		
-		public function renderRequest($request : GuiRenderRequest, $renderer : GuiRenderer) : void {
+		public function renderRequest($request : GuiRenderRequest, $renderer : GuiRenderer) : void
+		{
+			
 		}
 
 		public function dispose() : void
@@ -34,6 +37,16 @@ package tests.gui.utils {
 			testBitmap = null;
 			vec.splice(0, uint.MAX_VALUE);
 			vec = null;
+		}
+		
+		public function attach($newGui:GuiObject,$renderer:GuiRenderer):void
+		{
+		}
+		
+
+		public function release($previousGui:GuiObject,$renderer:GuiRenderer):void
+		{
+			
 		}
 	}
 }

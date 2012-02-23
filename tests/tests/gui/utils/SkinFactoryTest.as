@@ -210,11 +210,11 @@ package tests.gui.utils {
 			var bitmapData:BitmapData = new BitmapData(100, 100);
 			// create single mapping. // with args..
 			var pattern:String = "cacheTest";
-			factory.register( pattern, GuiObjectSkinTest, {test1:"Testing",test2:123,testBitmap:bitmapData } );
-			factory.setCacheLimit( GuiObjectSkinTest, 0);
+			factory.register( pattern, SkinFactoryTestSkin, {test1:"Testing",test2:123,testBitmap:bitmapData } );
+			factory.setCacheLimit( SkinFactoryTestSkin, 0);
 			
 			var _objs:Vector.<IGuiObjectSkin> = new Vector.<IGuiObjectSkin>();
-			var obj:GuiObjectSkinTest;
+			var obj:SkinFactoryTestSkin;
 			
 			var enterFrame:Function = function( $event:Event ):void
 			{
@@ -222,7 +222,7 @@ package tests.gui.utils {
 				if( currentFrame++ >= repeatNumFrames )
 				{
 					testedNoCache = true;
-					factory.setCacheLimit( GuiObjectSkinTest, uint.MAX_VALUE );
+					factory.setCacheLimit( SkinFactoryTestSkin, uint.MAX_VALUE );
 					currentFrame = 1;
 				}
 					
@@ -232,7 +232,7 @@ package tests.gui.utils {
 					time = getTimer();
 					while(i++<numObjectsNoCache)
 					{
-						obj = factory.create(pattern) as GuiObjectSkinTest;
+						obj = factory.create(pattern) as SkinFactoryTestSkin;
 						_objs.push(obj);
 					}
 					i=0;
@@ -249,7 +249,7 @@ package tests.gui.utils {
 					time = getTimer();
 					while(i++<numObjectsCache)
 					{
-						obj = factory.create(pattern) as GuiObjectSkinTest;
+						obj = factory.create(pattern) as SkinFactoryTestSkin;
 						_objs.push(obj);
 					}
 					i=0;

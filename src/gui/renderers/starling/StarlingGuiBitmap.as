@@ -16,22 +16,13 @@ package gui.renderers.starling
 			super(texture);
 		}
 		
-		/**
-		 * Called when the renderer is removed from screen. After this is called it is likely it is cached in the Renderer Factory object
-		 * to be reused later.
-		 * 
-		 * If the renderer required any dependencies it should clean itself up here. 
-		 */
-		public function clip():void
+		public function attach($newGui:GuiObject,$renderer:GuiRenderer):void
 		{
-		
+			
 		}
 		
-		/**
-		 * Called when a renderer is added to the screen for the first time.
-		 * Called once during this renderers usage on screen. Clip is called after.
-		 */
-		public function unclip($request:GuiRenderRequest,$renderer:GuiRenderer):void
+
+		public function release($previousGui:GuiObject,$renderer:GuiRenderer):void
 		{
 			
 		}

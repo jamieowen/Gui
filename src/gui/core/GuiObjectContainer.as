@@ -75,7 +75,7 @@ package gui.core
 		{
 			super();
 			
-			if (getQualifiedClassName(this) == "gui.display::GuiObjectContainer")
+			if (getQualifiedClassName(this) == "gui.core::GuiObjectContainer")
 				throw new AbstractClassError();
 			
 			_scrollPositionX = _scrollPositionY = 0.0;

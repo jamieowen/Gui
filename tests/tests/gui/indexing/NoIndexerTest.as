@@ -1,6 +1,7 @@
 package tests.gui.indexing {
-	import gui.core.GuiObjectContainer;
 	import gui.indexing.NoIndexer;
+
+	import tests.helpers.TestGuiObjectContainer;
 	
 	/**
 	* Test Description
@@ -16,7 +17,7 @@ package tests.gui.indexing {
 		public static function initialise():void
 		{
 			indexer 		= new NoIndexer();
-			container 		= new GuiObjectContainer();
+			container 		= new TestGuiObjectContainer();
 		}
 
 		/**

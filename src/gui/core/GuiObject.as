@@ -180,7 +180,7 @@ package gui.core {
 		 */
 		public function GuiObject()
 		{
-			if (getQualifiedClassName(this) == "gui.display::GuiObject")
+			if (getQualifiedClassName(this) == "gui.core::GuiObject")
 				throw new AbstractClassError();
 				
 			_x = _y = _width = _height = 0.0;

@@ -60,7 +60,7 @@ package tests.helpers
 				iy = 0;
 				while(iy<2)
 				{
-					bg = new GuiObject();
+					bg = new TestGuiObject();
 					$container.addChild( bg );
 					bg.width = bg.height = $size;
 					bg.x = (ix*$size) + ( $padding*(ix+1) );
@@ -70,7 +70,7 @@ package tests.helpers
 					if( $depth < $maxDepth )
 					{
 						// add another container and add again
-						cont = new GuiObjectContainer();
+						cont = new TestGuiObjectContainer();
 						$container.addChild( cont );
 						cont.x = bg.x;
 						cont.y = bg.y;

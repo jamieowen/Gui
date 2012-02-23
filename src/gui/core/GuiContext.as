@@ -1,18 +1,16 @@
-package gui.core
-{
-	import gui.indexing.NoIndexer;
+package gui.core {
+	import gui.events.GuiEvent;
+	import gui.events.GuiRenderEvent;
 	import gui.indexing.IGuiIndexer;
+	import gui.indexing.NoIndexer;
+	import gui.indexing.qtree.QTreeData;
+	import gui.render.GuiRenderRequest;
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
-	import gui.events.GuiEvent;
-	import gui.events.GuiRenderEvent;
-	import gui.indexing.QTree;
-	import gui.indexing.qtree.QTreeData;
-	import gui.render.GuiRenderRequest;
 	
 
 	/**
@@ -89,6 +87,7 @@ package gui.core
 		
 		public function dispose():void
 		{
+			// TODO Test this.
 			removeEventListener( GuiEvent.ADDED_TO_CONTEXT, onAddedToContext );
 			removeEventListener( GuiEvent.REMOVED_FROM_CONTEXT, onRemovedFromContext );
 			removeEventListener( GuiEvent.RESIZE, onResized );
@@ -130,20 +129,21 @@ package gui.core
 				var timer:Number = getTimer();
 				var viewRect:Rectangle = getGlobalBounds();
 				
-				var renderQueue:Vector.<GuiRenderRequest> 	= new Vector.<GuiRenderRequest>();
+				var renderQueue:Vector.<GuiRenderRequest> 	= _indexer.find(viewRect);
 				
 				//TODO Update GuiContext to support new return from Indexer.
-				var results:Vector.<QTreeData>;// 				= _indexer.find( viewRect );
 				
-				var i:int;
-				var obj:GuiObject;
+				//var i:int;
+				//var obj:GuiObject;
 				
-				var l:int = results.length;
-				var viewClip:Rectangle;
-				var guiRect:Rectangle;
-				var intersects:Boolean;
-				var intersect:Rectangle;
-			
+				//var l:int = results.length;
+				//var viewClip:Rectangle;
+				//var guiRect:Rectangle;
+				//var intersects:Boolean;
+				//var intersect:Rectangle;
+				
+				
+				/**
 				while( i<l )
 				{
 					obj = results[i++].data as GuiObject;
@@ -173,6 +173,7 @@ package gui.core
 						renderQueue.push(new GuiRenderRequest(obj,guiRect,null));
 					// else leave out.
 				}
+				**/
 				
 				//trace( "Render : " + l + " of " + _qtree.numItems );
 				//trace( "time : " + (( getTimer()-timer )/1000).toFixed(3) + " " + l );
@@ -202,8 +203,7 @@ package gui.core
 		 */
 		protected function onRemovedFromContext( $event:GuiEvent ):void
 		{
-			trace( "Removed : " + $event.guiObject );
-			
+			//trace( "Removed : " + $event.guiObject );
 			var gui:GuiObject 	= $event.guiObject;
 			_indexer.remove( gui );
 			invalidate( gui );
@@ -215,7 +215,7 @@ package gui.core
 		 */
 		protected function onResized( $event:GuiEvent ):void
 		{
-			trace( "Resize : " + $event.guiObject );
+			//trace( "Resize : " + $event.guiObject );
 			var gui:GuiObject 	= $event.guiObject;
 			_indexer.update( gui, gui.getGlobalBounds() );
 			invalidate( gui );

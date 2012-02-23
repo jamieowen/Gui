@@ -1,5 +1,7 @@
 package gui.utils
 {
+	import flash.utils.Dictionary;
+	import gui.core.GuiObject;
 	import gui.render.IGuiObjectSkin;
 	/**
 	* The SkinFactory enables mapping of the <code>skin</code> property of a <code>GuiObject</code> to
@@ -18,7 +20,7 @@ package gui.utils
 		// store all mappings
 		private var _mappings:Vector.<SkinFactoryMapping>;
 		
-		// store matched skin names to an object for quick retrieval - this will be called each frame when rendering.
+		// store matched skin names to class definitions in an object for quick retrieval - this will be called each frame when rendering.
 		private var _matchCache:Object;
 		
 		// creates and disposes of instances whilst maintaining cache limits.
@@ -188,16 +190,18 @@ package gui.utils
 		* @param The pattern / skin name from the <code>GuiObject</code>
 		* @return The instantiated or cached <code>IGuiObjectSkin</code> for use.
 		*/
-		public function create($pattern:String):IGuiObjectSkin
+		public function create($pattern:String ):IGuiObjectSkin
 		{
 			var mapping:SkinFactoryMapping = match( $pattern );
 			if( mapping ) return _instanceCache.create(mapping.cls, mapping.init, mapping.construct );
-			else throw new Error("No skin found for pattern.");
+			else throw new Error("No skin found for pattern :" + $pattern );
 		}
 		
 		/**
-		 * Disposes of a skin
-		 *
+		 * Disposes of a skin.  This does not mean that the IGuiObjectSkin's <code>dispose()</code>
+		 * method is called straight away - The skin is cached for future use first.  If the 
+		 * cache exceeds the cache limit for that class the <code>dispose()</code> method is called and
+		 * the instance is released for garbage collection.
 		 */
 		public function dispose($obj:IGuiObjectSkin):void
 		{
@@ -245,7 +249,7 @@ import flash.utils.Dictionary;
 */
 internal class Cache
 {
-	// stores cache items by class type.
+	// stores cached items by class type.
 	private var _cacheByClass:Dictionary;
 	
 	/**
