@@ -1,5 +1,5 @@
-package tests.suites {
-	import tests.gui.core.GuiContextTest;
+package tests.suites
+{
 	import tests.gui.core.GuiObjectContainerTest;
 	import tests.gui.core.GuiObjectTest;
 
@@ -13,9 +13,6 @@ package tests.suites {
 		
 		[Test(order=2)]
 		public var guiObjectContainer:GuiObjectContainerTest;
-		
-		[Test(order=3)]
-		public var guiContext:GuiContextTest;
 	}
 }
 

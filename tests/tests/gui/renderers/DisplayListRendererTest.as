@@ -1,24 +1,23 @@
 package tests.gui.renderers {
-	import gui.display.GuiScrollContainer;
-	import gui.render.GuiRenderer;
-	import org.flexunit.async.Async;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
+	import gui.core.GuiContext;
 	import gui.core.GuiObject;
 	import gui.core.GuiObjectContainer;
-	import gui.core.GuiContext;
+	import gui.display.GuiScrollContainer;
+	import gui.render.GuiRenderer;
 	import gui.renderers.DisplayListRenderer;
 	import gui.renderers.displaylist.DisplayListGuiBitmap;
 
 	import tests.helpers.IndexerTestDataHelper;
-	import tests.helpers.TestGuiObject;
 
 	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.async.Async;
 	import org.fluint.uiImpersonation.UIImpersonator;
 
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	/**
 	* Test Description
@@ -49,7 +48,7 @@ package tests.gui.renderers {
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			
-			renderer.skins.register(TestGuiObject.DEFAULT_SKIN_NAME, DisplayListGuiBitmap, {bitmapData:bitmap});
+			renderer.skins.register("skinName", DisplayListGuiBitmap, {bitmapData:bitmap});
 		}
 
 		/**

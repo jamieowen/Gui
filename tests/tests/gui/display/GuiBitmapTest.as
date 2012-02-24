@@ -1,18 +1,20 @@
-package tests.gui.core {
+package tests.gui.display
+{
 	import gui.core.GuiContext;
-
-	import tests.helpers.TestGuiObject;
 	import tests.helpers.TestGuiObjectContainer;
-
+	import gui.display.GuiBitmap;
+	import tests.gui.core.CoreGuiObjectTestBase;
 	/**
-	 * @author jamieowen
-	 */
-	public class GuiObjectContainerTest extends CoreGuiObjectTestBase
+	* Class Description
+	*
+	* @author jamieowen
+	*/
+	public class GuiBitmapTest extends CoreGuiObjectTestBase
 	{
 		[BeforeClass]
 		public static function initialise():void
 		{
-			guiObjectClass = TestGuiObject;
+			guiObjectClass = GuiBitmap;
 			guiObjectContainerClass = TestGuiObjectContainer;
 			
 			// override and place own test GuiObject here.

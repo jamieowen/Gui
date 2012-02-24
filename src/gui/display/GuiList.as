@@ -4,7 +4,7 @@ package gui.display {
 	/**
 	 * @author jamieowen
 	 */
-	public class GuiList extends GuiObjectContainer {
+	public class GuiList extends GuiScrollContainer {
 		public function GuiList() {
 			super();
 		}

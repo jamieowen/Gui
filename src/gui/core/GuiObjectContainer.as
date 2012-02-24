@@ -44,6 +44,7 @@ package gui.core
 				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer );
 				
+				if( context ) context.invalidation.onAdded( child ); // this needs to add children
 				if( context ) child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
 				if( context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
 			}
@@ -67,7 +68,8 @@ package gui.core
 				
 				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer );
-
+				
+				if( context ) context.invalidation.onRemoved( child );
 				if( child.context ) child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
 				if( child.context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
 					

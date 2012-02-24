@@ -68,7 +68,7 @@ package gui.core
 				
 				var renderQueue:Vector.<GuiRenderRequest> 	= _indexer.find(viewRect);
 				
-				if( onRender ) onRender( renderQueue );
+				if( onRender != null ) onRender( renderQueue );
 				
 				_invalidation.reset();
 			}
@@ -112,6 +112,7 @@ internal class Invalidation
 	{
 		_context = $context;
 		_invalidated = new Vector.<GuiObject>();
+		_stats = new InvalidationStats();
 	}
 	
 	private function invalidate( $obj:GuiObject ):void
@@ -195,6 +196,12 @@ internal class InvalidationStats
 	{
 		added = removed = moved = resized = scrolled = skinChanged = dataChanged = 0;
 	}
+	
+	public function toString():String
+	{
+		return "[InvalidationStats] added:" + added + " removed:" + removed + " moved:" + moved + " resized:" + resized + " scrolled:" + scrolled + " skin:" + skinChanged + " data:" + dataChanged;
+	}
+	
 }
 
 

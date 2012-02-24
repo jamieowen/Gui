@@ -1,12 +1,19 @@
-package tests.helpers {
+package tests.helpers
+{
 	import gui.core.GuiObjectContainer;
-
 	/**
-	 * @author jamieowen
-	 */
-	public class TestGuiObjectContainer extends GuiObjectContainer {
-		public function TestGuiObjectContainer() {
-			super();
+	* A bare extended GuiObjectContainer for instantiation used throughout tests - DO NOT MODIFY!
+	*
+	* @author jamieowen
+	*/
+	public class TestGuiObjectContainer extends GuiObjectContainer 
+	{
+		/**
+		* 
+		*/
+		public function TestGuiObjectContainer()
+		{
+		
 		}
 	}
 }
