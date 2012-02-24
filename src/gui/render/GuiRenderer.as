@@ -1,14 +1,13 @@
 package gui.render {
+	import gui.core.GuiContext;
 	import gui.core.GuiObject;
 	import gui.core.GuiObjectContainer;
-	import flash.utils.Dictionary;
-	import gui.utils.SkinFactory;
-	import gui.core.GuiContext;
 	import gui.errors.AbstractClassError;
 	import gui.errors.AbstractMethodError;
-	import gui.events.GuiRenderEvent;
+	import gui.utils.SkinFactory;
 
 	import flash.events.EventDispatcher;
+	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	
 	/**
@@ -42,7 +41,7 @@ package gui.render {
 		 */
 		public function get skins():SkinFactory
 		{
-			return _skinFactory;	
+			return _skinFactory;
 		}
 		
 		/**
@@ -186,16 +185,6 @@ package gui.render {
 		protected function removeSkin( $skin:IGuiObjectSkin ):void
 		{
 			throw new AbstractMethodError();
-		}
-		
-		/**
-		 * Listens to the supplied <code>context</code> for render events
-		 * and triggers the <code>render()</code>
-		 */
-		protected function onRender( $event:GuiRenderEvent ):void
-		{
-			requiresRender = true;
-			render($event.queue);
 		}
 		
 		/**

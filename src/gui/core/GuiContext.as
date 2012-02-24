@@ -24,6 +24,11 @@ package gui.core
 		/** Temp render function for a single renderer **/
 		public var onRender:Function;
 		
+		public function get root():GuiObject
+		{
+			return _root;
+		}
+		
 		public function get invalidation():Invalidation
 		{
 			return _invalidation;
@@ -45,9 +50,10 @@ package gui.core
 			_root.setContext(this);
 			
 			_indexer = ( $indexer == null ) ? new NoIndexer():$indexer;
-			_indexer.add(_root);
 			
+			// invalidation will add root to the Indexer
 			_invalidation = new Invalidation(this);
+			_invalidation.onAdded(_root);
 		}
 		
 		public function dispose():void
@@ -106,6 +112,7 @@ internal class Invalidation
 	{
 		_invalid = false;
 		_invalidated.splice(0, uint.MAX_VALUE);
+		_stats.reset();
 	}
 
 	public function Invalidation($context:GuiContext)
@@ -192,7 +199,7 @@ internal class InvalidationStats
 	public var skinChanged:uint;
 	public var dataChanged:uint;
 	
-	public function reset():void
+	internal function reset():void
 	{
 		added = removed = moved = resized = scrolled = skinChanged = dataChanged = 0;
 	}

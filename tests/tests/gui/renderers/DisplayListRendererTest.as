@@ -43,12 +43,14 @@ package tests.gui.renderers {
 			UIImpersonator.addChild(sprite);
 			
 			contextRoot = new GuiScrollContainer();
+			contextRoot.name = "contextRoot";
+			
 			context  	= new GuiContext(contextRoot);
 			renderer 	= new DisplayListRenderer(context, sprite);
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			
-			renderer.skins.register("skinName", DisplayListGuiBitmap, {bitmapData:bitmap});
+			renderer.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});
 		}
 
 		/**
@@ -91,7 +93,7 @@ package tests.gui.renderers {
 			var depth:uint = 4;
 			// renderer should pick up changes.
 			IndexerTestDataHelper.create4Square(contextRoot, IndexerTestDataHelper.SQUARE_SMALL_SIZE, IndexerTestDataHelper.SQUARE_SMALL_PADDING, 0, depth, count);
-			var total:uint = count.x + count.y;
+			var total:uint = count.x + count.y; // x = number of containers, y = number of objects 
 			
 			var time:Number = getTimer();
 			// trigger update to trigger invalidatiSton.
@@ -158,7 +160,7 @@ package tests.gui.renderers {
 			timer.addEventListener(TimerEvent.TIMER, 
 				function($event:TimerEvent):void
 				{
-					removeContainer( contextRef,timer );
+					removeContainer( contextRef.root as GuiObjectContainer,timer );
 				},false,0,false );
 			
 			timer.start();

@@ -10,10 +10,10 @@ package {
 	import flash.display.Sprite;
 	
 	[SWF(frameRate=60,width=1280,height=1024)]
-	public class TestRunner extends Sprite {
+	public class AllSuitesRunner extends Sprite {
 		private var core : FlexUnitCore;
 
-		public function TestRunner() {
+		public function AllSuitesRunner() {
 
 			// Launch your unit tests by right clicking within this class and select: Debug As > FDT SWF Application
 			
@@ -33,11 +33,7 @@ package {
 			//var request:Request = Request.methods( someClass, ["method1", "method2", "method3"] ).sortWith( someSorter ).filterWith( someFilter );
 			//core.run( request );
 			
-			//core.run(UtilsSuite);
-			//core.run(IndexerSuite);
-			
-			core.run(RendererSuite);
-			//core.run(CoreSuite);
+			core.run([ CoreSuite,UtilsSuite,IndexerSuite,RendererSuite] );
 		}
 	}
 }

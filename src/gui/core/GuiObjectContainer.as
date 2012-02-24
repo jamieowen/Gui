@@ -44,9 +44,16 @@ package gui.core
 				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer );
 				
-				if( context ) context.invalidation.onAdded( child ); // this needs to add children
-				if( context ) child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
-				if( context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
+				if( context )
+				{
+					context.invalidation.onAdded( child );
+					child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
+					if( child is GuiObjectContainer )
+					{
+						callOnAddedOnChildren(child as GuiObjectContainer);
+						dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
+					}
+				}
 			}
 			else
 			{
@@ -69,9 +76,17 @@ package gui.core
 				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer );
 				
-				if( context ) context.invalidation.onRemoved( child );
-				if( child.context ) child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
-				if( child.context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
+				if( context )
+				{
+					context.invalidation.onRemoved( child );
+					child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
+					
+					if( child is GuiObjectContainer )
+					{
+						callOnRemovedOnChildren(child as GuiObjectContainer);
+						dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
+					}
+				}
 					
 				child.setParent(null);
 				
@@ -83,10 +98,6 @@ package gui.core
 			}
 		}
 		
-		/**
-		 * 
-		 * @param $context pass in ref to context if needed - as saves some extra calls 
-		 */
 		protected function dispatchEventOnChildren( $type:String, $container:GuiObjectContainer ):void
 		{
 			var i:int = 0;
@@ -103,6 +114,29 @@ package gui.core
 			}
 		}
 		
+		protected function callOnAddedOnChildren($container:GuiObjectContainer):void
+		{
+			var l:uint = $container.numChildren;
+			var child:GuiObject;
+			for( var i:int = 0; i<l; i++ )
+			{
+				child = $container.getChildAt(i);
+				context.invalidation.onAdded(child);
+				if( child is GuiObjectContainer ) callOnAddedOnChildren(child as GuiObjectContainer);
+			}
+		}
+		
+		protected function callOnRemovedOnChildren($container:GuiObjectContainer):void
+		{
+			var l:uint = $container.numChildren;
+			var child:GuiObject;
+			for( var i:int = 0; i<l; i++ )
+			{
+				child = $container.getChildAt(i);
+				context.invalidation.onRemoved(child);
+				if( child is GuiObjectContainer ) callOnRemovedOnChildren(child as GuiObjectContainer);
+			}
+		}
 		
 		public function removeChildren(beginIndex:int=0, endIndex:int=-1):void
 		{

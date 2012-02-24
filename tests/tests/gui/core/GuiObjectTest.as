@@ -30,6 +30,7 @@ package tests.gui.core {
 			
 			guiObject = null;
 			guiObjectContainer = null;
+			
 			guiContext.dispose();
 			guiContext = null;
 		}

@@ -61,6 +61,8 @@ package tests.helpers
 				while(iy<2)
 				{
 					bg = new TestGuiObject();
+					bg.skin = "square";
+					bg.name = "square";
 					$container.addChild( bg );
 					bg.width = bg.height = $size;
 					bg.x = (ix*$size) + ( $padding*(ix+1) );
@@ -71,6 +73,7 @@ package tests.helpers
 					{
 						// add another container and add again
 						cont = new TestGuiObjectContainer();
+						cont.name = "squareContainer";
 						$container.addChild( cont );
 						cont.x = bg.x;
 						cont.y = bg.y;
