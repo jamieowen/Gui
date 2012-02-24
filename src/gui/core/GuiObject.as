@@ -2,7 +2,7 @@ package gui.core {
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
-	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -12,11 +12,10 @@ package gui.core {
 	/**
 	 * Base class for all GuiObjects to inherit from.
 	 */
-	public class GuiObject
+	public class GuiObject extends EventDispatcher
 	{
 		private var _name:String;
 		private var _skin:String;
-		private var _data:*;
 		
 		private var _x:Number;
 		private var _y:Number;
@@ -46,7 +45,8 @@ package gui.core {
 		{
 			if( _x == $x ) return;
 			_x = $x;
-			dispatchContextEvent( new GuiEvent(GuiEvent.MOVE,this) );
+			dispatchEvent( new GuiEvent(GuiEvent.MOVE,this) );
+			if( context ) context.invalidation.onMoved(this);
 		}
 		
 		/**
@@ -64,7 +64,8 @@ package gui.core {
 		{
 			if( _y == $y ) return;
 			_y = $y;
-			dispatchContextEvent( new GuiEvent(GuiEvent.MOVE,this) );
+			dispatchEvent( new GuiEvent(GuiEvent.MOVE,this) );
+			if( context ) context.invalidation.onMoved(this);
 		}
 		
 		/**
@@ -82,10 +83,10 @@ package gui.core {
 		{
 			if( _width == $width ) return;
 			_width = $width;
-			dispatchContextEvent( new GuiEvent(GuiEvent.RESIZE,this) );
+			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
+			if( context ) context.invalidation.onResized(this);
 		}
 		
-
 		/**
 		 * Gets the GuiObject's height
 		 */
@@ -101,7 +102,8 @@ package gui.core {
 		{
 			if( _height == $height ) return;
 			_height = $height;
-			dispatchContextEvent( new GuiEvent(GuiEvent.RESIZE,this) );
+			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
+			if( context ) context.invalidation.onResized(this);
 		}
 		
 		/**
@@ -120,7 +122,6 @@ package gui.core {
 			_name = $name;
 		}
 		
-		
 		/**
 		 * Returns the GuiObject's skin name.
 		 */
@@ -129,13 +130,15 @@ package gui.core {
 			return _skin;
 		}
 
-		
 		/**
 		 * Sets the GuiObject's skin.
 		 */
 		public function set skin($skin:String):void
 		{
+			if( _skin == $skin ) return;
 			_skin = $skin;
+			dispatchEvent( new GuiEvent(GuiEvent.SKIN_CHANGE,this) );
+			if( context ) context.invalidation.onSkinChanged(this);
 		}
 		
 		/**
@@ -151,15 +154,16 @@ package gui.core {
 		 */
 		public function get context():GuiContext
 		{
-			var parent:GuiObject = this;
-			var context:GuiContext;
-			while( parent && !context)
-			{
-				if( parent is GuiContext ) context = parent as GuiContext;
-				parent = parent.parent;
-			}
-			return context;
-		}		
+			if( _context ) return _context;
+			else if( parent ) return parent.context;
+			else return null;
+		}
+		
+		private var _context:GuiContext;
+		internal function setContext( $guiContext:GuiContext ):void
+		{
+			_context = $guiContext;
+		}
 
 		/**
 		 * Returns the objects current transformation as a matrix.
@@ -171,7 +175,7 @@ package gui.core {
 			//if( _rotation != 0.0 ) m.rotate(_rotation);
 			if( _x != 0.0 || _y != 0.0 ) m.translate(_x,_y);
 			
-			if( parent && parent.scrollMatrix ) m.concat( parent.scrollMatrix );
+			if( parent is IScrollable && ( parent as IScrollable ).scrollMatrix ) m.concat( ( parent as IScrollable ).scrollMatrix );
 			return m;
 		}
 		
@@ -189,8 +193,6 @@ package gui.core {
 			_name = _skin = "";
 			_visible = true;
 		}
-		
-		
 		
 		// Methods
 		
@@ -218,31 +220,12 @@ package gui.core {
 			var point:Point = localToGlobal(new Point(0,0));
 			return new Rectangle(point.x,point.y,width,height);
 		}
-		
-		/**
-		 * Removes the GuiObject from it's parent if it has one.
-		 */
-		public function removeFromParent():void
-		{
-			if (_parent) _parent.removeChild(this);
-		}
+	
 		
 		internal function setParent($value:GuiObjectContainer):void 
 		{ 
+			// events/notifications sent by container.
 			_parent = $value;
 		}
-		
-		/**
-		 * Dispatches an event on the context.
-		 * will may be move to extending eventdispatcher with this.. and support bubbling.
-		 */
-		protected function dispatchContextEvent( $event:Event ):void
-		{
-			var context:GuiContext = context;
-			if( context == null ) return;
-			context.dispatchEvent($event);
-		}
-		
-		
 	}
 }

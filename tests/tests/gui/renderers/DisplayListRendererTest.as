@@ -1,4 +1,11 @@
 package tests.gui.renderers {
+	import gui.display.GuiScrollContainer;
+	import gui.render.GuiRenderer;
+	import org.flexunit.async.Async;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	import gui.core.GuiObject;
+	import gui.core.GuiObjectContainer;
 	import gui.core.GuiContext;
 	import gui.renderers.DisplayListRenderer;
 	import gui.renderers.displaylist.DisplayListGuiBitmap;
@@ -20,6 +27,7 @@ package tests.gui.renderers {
 	*/
 	public class DisplayListRendererTest 
 	{
+		public static var contextRoot:GuiScrollContainer;
 		public static var context:GuiContext;
 		public static var renderer:DisplayListRenderer;
 		
@@ -35,8 +43,9 @@ package tests.gui.renderers {
 			var sprite:Sprite = new Sprite();
 			UIImpersonator.addChild(sprite);
 			
-			context  = new GuiContext();
-			renderer = new DisplayListRenderer(context, sprite);
+			contextRoot = new GuiScrollContainer();
+			context  	= new GuiContext(contextRoot);
+			renderer 	= new DisplayListRenderer(context, sprite);
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			
@@ -82,7 +91,7 @@ package tests.gui.renderers {
 			var count:Point = new Point();
 			var depth:uint = 4;
 			// renderer should pick up changes.
-			IndexerTestDataHelper.create4Square(context, IndexerTestDataHelper.SQUARE_SMALL_SIZE, IndexerTestDataHelper.SQUARE_SMALL_PADDING, 0, depth, count);
+			IndexerTestDataHelper.create4Square(contextRoot, IndexerTestDataHelper.SQUARE_SMALL_SIZE, IndexerTestDataHelper.SQUARE_SMALL_PADDING, 0, depth, count);
 			var total:uint = count.x + count.y;
 			
 			var time:Number = getTimer();
@@ -100,9 +109,61 @@ package tests.gui.renderers {
 			assertTrue( "released do not match",0 == renderer.stats.released );
 		}
 		
-		[Test(order=2)]
+		[Test(order=2,async)]
 		public function removeObjectsFromContext():void
 		{
+			// navigates to a leaf node and removes the container.
+			
+			var contextRef:GuiContext = context;
+			var rendererRef:GuiRenderer = renderer;
+			
+			var removeContainer:Function = function($container:GuiObjectContainer, $timer:Timer):void
+			{
+				var i:int = 0;
+				var l:int = $container.numChildren;
+				var child:GuiObject;
+				while( i<l )
+				{
+					child = $container.getChildAt(i++);
+					if( child is GuiObjectContainer )
+					{
+						removeContainer( child as GuiObjectContainer,$timer );
+						contextRef.update();
+						return;
+					}
+				}
+				// no containers found in this container so remove this.
+				if( $container.parent ){
+					$container.parent.removeChild($container);
+					contextRef.update();
+				}else
+				{
+					// complete
+					// remove last children
+					l = $container.numChildren;
+					i = 0;
+					while( i++<l )
+					{
+						$container.removeChildAt(0);
+					}
+					contextRef.update();
+					trace( rendererRef.stats );
+					$timer.repeatCount = 1; // run one more frame.
+					
+				}
+			};
+			
+			var timer:Timer = new Timer(1000/30);
+			
+			
+			timer.addEventListener(TimerEvent.TIMER, 
+				function($event:TimerEvent):void
+				{
+					removeContainer( contextRef,timer );
+				},false,0,false );
+			
+			timer.start();
+			Async.proceedOnEvent(this, timer, TimerEvent.TIMER_COMPLETE,5000);
 			
 		}
 			

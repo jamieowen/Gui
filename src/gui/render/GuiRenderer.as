@@ -65,8 +65,8 @@ package gui.render {
 			_stats		 = new RendererStats();
 			_skinFactory = $skinFactory == null ? new SkinFactory() : new $skinFactory();
 			
-			_context 	  = $context;
-			_context.addEventListener(GuiRenderEvent.RENDER, onRender );
+			_context 	  		= $context;
+			_context.onRender 	= render;
 			
 			_skinHold  		= new Vector.<IGuiObjectSkin>();
 			_guiToSkinMap	= new Dictionary();
@@ -230,5 +230,10 @@ internal class RendererStats
 	public function reset():void
 	{
 		total = existing = attached = released = numContainers = 0;
+	}
+	
+	public function toString():String
+	{
+		return "[GuiRenderer] total:" + total + " existing:" + existing + " attached:" + attached + " released:" + released + " containers:" + numContainers;
 	}
 }

@@ -7,7 +7,7 @@ package
 	import flash.utils.getTimer;
 	import gui.core.GuiContext;
 	import gui.display.GuiBitmap;
-	import gui.display.GuiContainer;
+	import gui.display.GuiScrollContainer;
 	import gui.indexing.qtree.QTreeNode;
 	import gui.renderers.StarlingGuiRenderer;
 
@@ -20,7 +20,7 @@ package
 	{
 		public var guiContext:GuiContext;
 		public var starlingRenderer:StarlingGuiRenderer;
-		public var subContainer:GuiContainer;
+		public var subContainer:GuiScrollContainer;
 		
 		public function Rough()
 		{
@@ -28,11 +28,11 @@ package
 			stage.scaleMode 	= StageScaleMode.NO_SCALE;
 			
 			// CONTEXT 
-			guiContext = new GuiContext();
-			guiContext.x = guiContext.y = 100;
+			//guiContext = new GuiContext();
+			//guiContext.x = guiContext.y = 100;
 			
-			guiContext.width 	= 320;
-			guiContext.height 	= 480;
+			//guiContext.width 	= 320;
+			//guiContext.height 	= 480;
 			
 			//var stats:Stats = new Stats();
 			//addChild(stats);
@@ -66,7 +66,7 @@ package
 				if( i == 5 )
 				{
 					// add a clipped container..
-					var container:GuiContainer = new GuiContainer();
+					var container:GuiScrollContainer = new GuiScrollContainer();
 					container.height = 30;
 					container.x = 100;
 					container.y = 100 + (i*(bitmap.width+1));
@@ -81,7 +81,7 @@ package
 					}
 					trace("bitmap container x :" + bitmap.x );
 					subContainer = container;
-					guiContext.addChild( container );
+					//guiContext.addChild( container );
 				}else
 				{
 					bitmap = new GuiBitmap();
@@ -89,7 +89,7 @@ package
 					bitmap.x = 100;
 					bitmap.y = 100 + (i*(bitmap.width+1));
 					
-					guiContext.addChild( bitmap );
+					//guiContext.addChild( bitmap );
 				}
 
 				i++;

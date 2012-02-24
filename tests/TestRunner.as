@@ -1,4 +1,5 @@
 package {
+	import tests.suites.CoreSuite;
 	import tests.suites.RendererSuite;
 	import tests.suites.IndexerSuite;
 	import tests.suites.UtilsSuite;
@@ -35,7 +36,8 @@ package {
 			//core.run(UtilsSuite);
 			//core.run(IndexerSuite);
 			
-			core.run(RendererSuite);
+			//core.run(RendererSuite);
+			core.run(CoreSuite);
 		}
 	}
 }

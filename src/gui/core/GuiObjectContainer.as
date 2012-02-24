@@ -1,85 +1,27 @@
 package gui.core
 {
-	
-	import flash.geom.Matrix;
-	import flash.utils.getQualifiedClassName;
-	
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
+
+	import flash.utils.getQualifiedClassName;
+	
 
 	public class GuiObjectContainer extends GuiObject
 	{
 		private var _children:Vector.<GuiObject>;
-		
-		private var _scrollPositionX:Number;
-		
-		private var _scrollPositionY:Number;
-		
-		private var _clipChildren:Boolean;
-	
+			
 		public function get numChildren():int
 		{
 			return _children.length;
 		}
-		
-		public function get clipChildren():Boolean
-		{
-			return _clipChildren;
-		}
-		
-		public function set clipChildren( $value:Boolean ):void
-		{
-			_clipChildren = $value;
-		}
-		
-		public function get scrollMatrix():Matrix
-		{
-			if( _scrollPositionX != 0.0 || _scrollPositionY != 0.0 ){ 
-				var scroll:Matrix = new Matrix();
-				scroll.translate(_scrollPositionX, _scrollPositionY );
-				return scroll;
-			}else
-				return null;
-		}
-		
-		public function get scrollPositionX():Number
-		{
-			return _scrollPositionX;
-		}
-		
-		public function set scrollPositionX($position:Number):void
-		{
-			if( _scrollPositionX == $position ) return;
-			_scrollPositionX = $position;
-			dispatchContextEvent( new GuiEvent( GuiEvent.SCROLL, this ) );
-		}
-		
-		public function get scrollPositionY():Number
-		{
-			return _scrollPositionY;
-		}
-		
-		public function set scrollPositionY($position:Number):void
-		{
-			if( _scrollPositionY == $position ) return;
-			_scrollPositionY = $position;
-			dispatchContextEvent( new GuiEvent(GuiEvent.SCROLL,this) );
-		}
-		
-		// scrollMinimumX - width?
-		// scrollMaximumX
-		// scrollMinimumY - height?
-		// scrollMaximumY
-		
+
 		public function GuiObjectContainer()
 		{
 			super();
 			
 			if (getQualifiedClassName(this) == "gui.core::GuiObjectContainer")
 				throw new AbstractClassError();
-			
-			_scrollPositionX = _scrollPositionY = 0.0;
-			_clipChildren = false;
+
 			_children = new Vector.<GuiObject>();
 		}
 
@@ -92,22 +34,52 @@ package gui.core
 		{
 			if (index >= 0 && index <= numChildren)
 			{
-				child.removeFromParent();
+				if( child.parent ) {
+					child.parent.removeChild(child);
+				}
 				_children.splice(index, 0, child);
+				
 				child.setParent(this);
 				
-				if( context )
-				{
-					context.dispatchEvent(new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child));	
-					if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
-				}
+				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child) );
+				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer );
+				
+				if( context ) child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
+				if( context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
 			}
 			else
 			{
 				throw new RangeError("Invalid child index");
 			}
 		}
+
+		public function removeChild(child:GuiObject):void
+		{
+			var childIndex:int = getChildIndex(child);
+			if (childIndex != -1) removeChildAt(childIndex);
+		}
 		
+		public function removeChildAt(index:int):void
+		{
+			if (index >= 0 && index < numChildren)
+			{
+				var child:GuiObject = _children[index];
+				
+				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child) );
+				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer );
+
+				if( child.context ) child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
+				if( child.context && child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
+					
+				child.setParent(null);
+				
+				_children.splice(index, 1);
+			}
+			else
+			{
+				throw new RangeError("Invalid child index");
+			}
+		}
 		
 		/**
 		 * 
@@ -124,35 +96,11 @@ package gui.core
 			while( i<l )
 			{
 				child = $container.getChildAt(i++);
-				context.dispatchEvent(new GuiEvent($type,child));
+				child.dispatchEvent(new GuiEvent($type,child));
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( $type,child as GuiObjectContainer );
 			}
 		}
-
-		public function removeChild(child:GuiObject):void
-		{
-			var childIndex:int = getChildIndex(child);
-			if (childIndex != -1) removeChildAt(childIndex);
-		}
 		
-		public function removeChildAt(index:int):void
-		{
-			if (index >= 0 && index < numChildren)
-			{
-				var child:GuiObject = _children[index];
-				if( context )
-				{
-					context.dispatchEvent(new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,this));	
-					dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
-				}
-				child.setParent(null);
-				_children.splice(index, 1);
-			}
-			else
-			{
-				throw new RangeError("Invalid child index");
-			}
-		}
 		
 		public function removeChildren(beginIndex:int=0, endIndex:int=-1):void
 		{
@@ -232,8 +180,5 @@ package gui.core
 			
 			return false;
 		}
-
-			
-		
 	}
 }

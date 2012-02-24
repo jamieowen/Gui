@@ -1,115 +1,58 @@
-package gui.core {
-	import gui.events.GuiEvent;
-	import gui.events.GuiRenderEvent;
+package gui.core
+{
+	import gui.render.GuiRenderRequest;
 	import gui.indexing.IGuiIndexer;
 	import gui.indexing.NoIndexer;
-	import gui.indexing.qtree.QTreeData;
-	import gui.render.GuiRenderRequest;
 
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	
-
 	/**
-	 * Dispatched when a GuiObject is added to this context.
-	 */
-	[Event(name="guiAddedToContext", type="gui.events.GuiEvent")]
-	
-	/**
-	 * Dispatched when a GuiObject is removed from this context.
-	 */
-	[Event(name="guiRemovedFromContext", type="gui.events.GuiEvent")]
-	
-	
-	/**
-	 * Dispatched when a GuiObject is resized.
-	 */
-	[Event(name="guiResize", type="gui.events.GuiEvent")]
-	
-	/**
-	 * Dispatched when a GuiObject is moved.
-	 */
-	[Event(name="guiMove", type="gui.events.GuiEvent")]
-	
-	/**
-	 * Dispatched when changes in the context have happened and clipping has taken place.
-	 */
-	[Event(name="guiRender", type="gui.events.GuiRenderEvent")]
-	
-	/**
-	 * The GuiContext class is the root class for all GuiObjects
-	 * to be added to.  Similar to the stage in display list terms.
 	 * 
-	 * Uses a single event dispatcher for the context at the moment.
 	 */
-	public class GuiContext extends GuiObjectContainer implements IEventDispatcher
+	public class GuiContext
 	{
-		private var _eventDispatcher:EventDispatcher;
+		/** helper class to handle change in the context **/
+		private var _invalidation:Invalidation;
 		
-		/** Will hold updated list of GuiObjects to be processed in the next update() call.  **/
-		private var _invalidated:Vector.<GuiObject>; 
-		
-		/** Indicates that the invalidated objects need processing and to notify renderers if needed. **/
-		private var _invalid:Boolean = false;
-			
 		/** The spatial indexing used for the context**/
 		private var _indexer:IGuiIndexer;
 		
+		/** The root GuiObject **/
+		private var _root:GuiObject;
+		
+		/** Temp render function for a single renderer **/
+		public var onRender:Function;
+		
+		public function get invalidation():Invalidation
+		{
+			return _invalidation;
+		}
+
 		public function get indexer():IGuiIndexer
 		{
 			return _indexer; 
 		}
 		
-		public function GuiContext($indexer:IGuiIndexer=null)
+		public function GuiContext($guiRoot:*,$indexer:IGuiIndexer=null)
 		{
 			super();
 			
+			if( $guiRoot is Class ) _root = new $guiRoot();
+			else if( $guiRoot is GuiObject ) _root = $guiRoot;
+			else throw new ArgumentError("Root cannot be null.");
+			
+			_root.setContext(this);
+			
 			_indexer = ( $indexer == null ) ? new NoIndexer():$indexer;
-			// add a data item for this - we may remove this - GuiContext may be should not be extending GuiObjectContainer
-			// required, otherwise we receive events from the GuiContext.
-			_indexer.add(this);
+			_indexer.add(_root);
 			
-			_eventDispatcher = new EventDispatcher(this);
-			
-			addEventListener( GuiEvent.ADDED_TO_CONTEXT, onAddedToContext );
-			addEventListener( GuiEvent.REMOVED_FROM_CONTEXT, onRemovedFromContext );
-			addEventListener( GuiEvent.RESIZE, onResized );
-			addEventListener( GuiEvent.MOVE, onMoved );
-			addEventListener( GuiEvent.SCROLL, onScroll );
-			
-			_invalidated = new Vector.<GuiObject>();
-			
-			clipChildren = true;
+			_invalidation = new Invalidation(this);
 		}
 		
 		public function dispose():void
 		{
-			// TODO Test this.
-			removeEventListener( GuiEvent.ADDED_TO_CONTEXT, onAddedToContext );
-			removeEventListener( GuiEvent.REMOVED_FROM_CONTEXT, onRemovedFromContext );
-			removeEventListener( GuiEvent.RESIZE, onResized );
-			removeEventListener( GuiEvent.MOVE, onMoved );
-		}
-		
-		
-		/**
-		 * Invaliates the specfied object.
-		 * 
-		 * @param $child The GuiObject that has changed.
-		 */
-		protected function invalidate( $child:GuiObject ):void
-		{
-			_invalid = true;
-			return;
-			
-			if( _invalidated.indexOf( $child ) == -1 )
-			{
-				_invalidated.push( $child );
-				_invalid = true;
-			}
+			_invalidation.dispose();
 		}
 		
 		/**
@@ -118,19 +61,144 @@ package gui.core {
 		 */
 		public function update():void
 		{
-			if( _invalid )
+			if( _invalidation.invalid )
 			{
-				_invalid = false;
-				
-				// quick impl for now.
-				// just check everything from root.
-				// _invalidated.splice(0,uint.MAX_VALUE); // remove all for now
-
-				var timer:Number = getTimer();
-				var viewRect:Rectangle = getGlobalBounds();
+				var timer:Number 		= getTimer();
+				var viewRect:Rectangle 	= _root.getGlobalBounds();
 				
 				var renderQueue:Vector.<GuiRenderRequest> 	= _indexer.find(viewRect);
 				
+				if( onRender ) onRender( renderQueue );
+				
+				_invalidation.reset();
+			}
+		}
+	}
+}
+import gui.core.GuiContext;
+import gui.core.GuiObject;
+import gui.core.GuiObjectContainer;
+
+internal class Invalidation
+{
+	private var _invalid:Boolean = false;
+	private var _invalidated : Vector.<GuiObject>;
+	private var _context:GuiContext;
+	
+	private var _stats:InvalidationStats;
+		
+	public function get stats():InvalidationStats
+	{
+			return _stats;		
+	}
+		
+	public function get invalidated():Vector.<GuiObject>
+	{
+			return _invalidated;
+	}
+	
+	public function get invalid():Boolean
+	{
+		return _invalid;
+	}
+	
+	public function reset():void
+	{
+		_invalid = false;
+		_invalidated.splice(0, uint.MAX_VALUE);
+	}
+
+	public function Invalidation($context:GuiContext)
+	{
+		_context = $context;
+		_invalidated = new Vector.<GuiObject>();
+	}
+	
+	private function invalidate( $obj:GuiObject ):void
+	{
+		_invalid = true;
+		if( _invalidated.indexOf($obj) == -1 )
+			_invalidated.push($obj);
+	}
+	
+	internal function dispose():void
+	{
+		_context = null;
+		_invalidated.splice(0,uint.MAX_VALUE);
+	}
+		
+	public function onAdded( $obj:GuiObject ):void
+	{
+		stats.added++;
+		invalidate($obj);
+		_context.indexer.add($obj);
+	}
+	
+	public function onRemoved( $obj:GuiObject ):void
+	{
+		stats.removed++;
+		invalidate($obj);
+		_context.indexer.remove($obj);
+	}
+
+	public function onMoved( $obj:GuiObject ):void
+	{
+		stats.moved++;
+		invalidate($obj);
+		_context.indexer.update( $obj, $obj.getGlobalBounds() );
+	}
+	
+	public function onResized( $obj:GuiObject ):void
+	{
+		stats.resized++;
+		invalidate($obj);
+		_context.indexer.update( $obj, $obj.getGlobalBounds() );
+	}
+	
+	public function onSkinChanged( $obj:GuiObject ):void
+	{
+		stats.skinChanged++;
+		invalidate($obj);
+	}
+	
+	public function onScrolled( $obj:GuiObject ):void
+	{
+		stats.scrolled++;
+		invalidate($obj);
+		
+		// temp solution to update children positions.
+		var updateObj:Function = function($child:GuiObject):void
+		{
+			_context.indexer.update( $child, $child.getGlobalBounds() );
+			
+			var container:GuiObjectContainer = $child as GuiObjectContainer;
+			if( container )
+				for( var i:int = 0; i<container.numChildren; i++ )
+					updateObj(container.getChildAt(i));
+		};
+		
+		updateObj($obj);
+	}
+}
+
+internal class InvalidationStats
+{
+	public var added:uint;
+	public var removed:uint;
+	public var moved:uint;
+	public var resized:uint;
+	public var scrolled:uint;
+	public var skinChanged:uint;
+	public var dataChanged:uint;
+	
+	public function reset():void
+	{
+		added = removed = moved = resized = scrolled = skinChanged = dataChanged = 0;
+	}
+}
+
+
+
 				//TODO Update GuiContext to support new return from Indexer.
 				
 				//var i:int;
@@ -180,113 +248,4 @@ package gui.core {
 				
 				// TODO Create a stats or render info object.
 				// trace( "QTree Nodes: " + qtree.numNodes );
-				dispatchEvent( new GuiRenderEvent( GuiRenderEvent.RENDER,renderQueue ) );
-			}
-		}
-		
-		// Handlers
-		/**
-		 * Handles GuiObject's being added to the context.
-		 * @param $event GuiEvent
-		 */
-		protected function onAddedToContext( $event:GuiEvent ):void
-		{
-			//trace( "Added : " + $event.guiObject );
-			var gui:GuiObject 	= $event.guiObject;
-			_indexer.add( gui );
-			invalidate( gui );
-		}
-	
-		/**
-		 * Handles GuiObject's being removed from the context.
-		 * @param $event GuiEvent
-		 */
-		protected function onRemovedFromContext( $event:GuiEvent ):void
-		{
-			//trace( "Removed : " + $event.guiObject );
-			var gui:GuiObject 	= $event.guiObject;
-			_indexer.remove( gui );
-			invalidate( gui );
-		}
-		
-		/**
-		 * Handles GuiObject's being resized.
-		 * @param $event GuiEvent
-		 */
-		protected function onResized( $event:GuiEvent ):void
-		{
-			//trace( "Resize : " + $event.guiObject );
-			var gui:GuiObject 	= $event.guiObject;
-			_indexer.update( gui, gui.getGlobalBounds() );
-			invalidate( gui );
-		}
-		
-		/**
-		 * Handles GuiObject's being moved.
-		 * @param $event GuiEvent
-		 */
-		protected function onMoved( $event:GuiEvent ):void
-		{
-			//trace( "Moved : " + $event.guiObject );
-			
-			var gui:GuiObject 	= $event.guiObject;
-			_indexer.update( gui, gui.getGlobalBounds() );
-			invalidate( gui );
-		}
-		
-		/**
-		 * Handles GuiObjectContainers's scroll event.
-		 * @param $event GuiEvent
-		 */
-		protected function onScroll( $event:GuiEvent ):void
-		{
-			//trace( "Scroll : " + $event.guiObject );
-
-			var gui:GuiObject 	= $event.guiObject;
-			_indexer.update( gui, gui.getGlobalBounds() );
-			var cont:GuiObjectContainer = gui as GuiObjectContainer;
-			invalidate( gui );
-			
-			//return;
-			if( cont )
-			{
-				// update children - this should be looked at.
-				var l:uint = cont.numChildren;
-				var i:uint = 0;
-				while( i<l )
-				{
-					dispatchEvent( new GuiEvent(GuiEvent.MOVE, cont.getChildAt(i++)));
-				}
-				//trace( "dispatch move on :" + l);
-			}
-			
-			
-		}
-		
-		// IEventDispatcher impl
-		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
-		{
-			_eventDispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
-		}
-		
-		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void
-		{
-			_eventDispatcher.removeEventListener(type,listener,useCapture);
-		}
-		
-		public function dispatchEvent(event:Event):Boolean
-		{
-			return _eventDispatcher.dispatchEvent(event);
-		}
-		
-		public function hasEventListener(type:String):Boolean
-		{
-			return hasEventListener(type);
-		}
-		
-		public function willTrigger(type:String):Boolean
-		{
-			return willTrigger(type);
-		}
-	}
-}
+				//dispatchEvent( new GuiRenderEvent( GuiRenderEvent.RENDER,renderQueue ) );

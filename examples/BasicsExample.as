@@ -6,14 +6,11 @@ package {
 
 	import starling.core.Starling;
 	import starling.display.DisplayObjectContainer;
-	import starling.display.Image;
 	import starling.events.Event;
 	import starling.text.BitmapFont;
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -76,15 +73,14 @@ package {
 			$e.target.removeEventListener(starling.events.Event.CONTEXT3D_CREATE, setupGui);
 			
 			// gui startup
-			gui 			= new GuiContext();
-			gui.width 		= 640;
-			gui.height		= 960;
+			//gui 			= new GuiContext();
+			//gui.width 		= 640;
+			//gui.height		= 960;
 			
 			// turn off clipping on root.
-			gui.clipChildren = false;
 			
 			// add 50 padding to show clipping effect
-			gui.x = gui.y 	= 50; 
+			//gui.x = gui.y 	= 50; 
 			
 			// renderer output
 			var root:DisplayObjectContainer = (starling.stage.root as DisplayObjectContainer).getChildAt(0) as DisplayObjectContainer;
@@ -159,8 +155,8 @@ package {
 			
 			bitmap2.x = bitmap2.y = 600;
 			
-			gui.addChild( bitmap );
-			gui.addChild( bitmap2 );
+			//gui.addChild( bitmap );
+			//gui.addChild( bitmap2 );
 
 		}
 		
