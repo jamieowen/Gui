@@ -159,6 +159,23 @@ package gui.core {
 			else return null;
 		}
 		
+		/**
+		 * Returns the depth of this GuiObject
+		 */
+		public function get depth():int
+		{ 
+			var p:GuiObjectContainer = parent;
+			var d:int = 0;
+			while( p ){
+				d++;
+				p = p.parent;
+			}
+			
+			// TODO Should probably cache the depth property
+			
+			return d;
+		}
+		
 		private var _context:GuiContext;
 		internal function setContext( $guiContext:GuiContext ):void
 		{
@@ -219,6 +236,11 @@ package gui.core {
 		{
 			var point:Point = localToGlobal(new Point(0,0));
 			return new Rectangle(point.x,point.y,width,height);
+		}
+		
+		public function getBounds():Rectangle
+		{
+			return new Rectangle(0,0,width,height);
 		}
 	
 		

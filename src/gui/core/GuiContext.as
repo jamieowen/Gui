@@ -81,6 +81,8 @@ package gui.core
 		}
 	}
 }
+
+import flash.utils.Dictionary;
 import gui.core.GuiContext;
 import gui.core.GuiObject;
 import gui.core.GuiObjectContainer;
@@ -89,6 +91,7 @@ internal class Invalidation
 {
 	private var _invalid:Boolean = false;
 	private var _invalidated : Vector.<GuiObject>;
+	private var _items:Dictionary;
 	private var _context:GuiContext;
 	
 	private var _stats:InvalidationStats;
@@ -113,54 +116,95 @@ internal class Invalidation
 		_invalid = false;
 		_invalidated.splice(0, uint.MAX_VALUE);
 		_stats.reset();
+		
+		clearDict();
+	}
+	
+	private function clearDict():void
+	{
+		// clear dict
+		for( var key:Object in _items )
+		{
+			_items[key] = null;
+			delete _items[key];
+		}
+	}
+	
+	/**
+	 *
+	 */
+	private function update():void
+	{
+		// call update() on all GuiObjects and update indexes
+		
+		
 	}
 
 	public function Invalidation($context:GuiContext)
 	{
 		_context = $context;
+		
 		_invalidated = new Vector.<GuiObject>();
+		_items = new Dictionary(true);
 		_stats = new InvalidationStats();
 	}
 	
-	private function invalidate( $obj:GuiObject ):void
+	private function invalidate( $obj:GuiObject, $updateIndex:Boolean = false, $addIndex:Boolean = false, $removeIndex:Boolean = false):void
 	{
 		_invalid = true;
+		var item:InvalidationItem;
 		if( _invalidated.indexOf($obj) == -1 )
+		{
+			item = new InvalidationItem($obj, $updateIndex, $addIndex, $removeIndex );
 			_invalidated.push($obj);
+			_items[ $obj ] = item;
+		}else
+		{
+			item = _items[$obj] as InvalidationItem;
+			item.updateIndex = $updateIndex;
+			item.addIndex = $addIndex;
+			item.removeIndex = $removeIndex;
+		}
 	}
-	
+
 	internal function dispose():void
 	{
 		_context = null;
 		_invalidated.splice(0,uint.MAX_VALUE);
+		_invalidated = null;
+		clearDict();
+		_items = null;
 	}
 		
 	public function onAdded( $obj:GuiObject ):void
 	{
 		stats.added++;
-		invalidate($obj);
-		_context.indexer.add($obj);
+		invalidate($obj,false,true,false);
 	}
 	
 	public function onRemoved( $obj:GuiObject ):void
 	{
 		stats.removed++;
-		invalidate($obj);
-		_context.indexer.remove($obj);
+		invalidate($obj,false,false,true);
 	}
 
 	public function onMoved( $obj:GuiObject ):void
 	{
 		stats.moved++;
-		invalidate($obj);
-		_context.indexer.update( $obj, $obj.getGlobalBounds() );
+		invalidate($obj,true);
+		var container:GuiObjectContainer = $obj as GuiObjectContainer;
+		if( container )
+		{
+			for( var i:int = 0; i<container.numChildren; i++ )
+					onMoved(container.getChildAt(i));
+		}
 	}
+	
 	
 	public function onResized( $obj:GuiObject ):void
 	{
 		stats.resized++;
-		invalidate($obj);
-		_context.indexer.update( $obj, $obj.getGlobalBounds() );
+		invalidate($obj,true);
 	}
 	
 	public function onSkinChanged( $obj:GuiObject ):void
@@ -172,20 +216,23 @@ internal class Invalidation
 	public function onScrolled( $obj:GuiObject ):void
 	{
 		stats.scrolled++;
-		invalidate($obj);
-		
-		// temp solution to update children positions.
-		var updateObj:Function = function($child:GuiObject):void
-		{
-			_context.indexer.update( $child, $child.getGlobalBounds() );
-			
-			var container:GuiObjectContainer = $child as GuiObjectContainer;
-			if( container )
-				for( var i:int = 0; i<container.numChildren; i++ )
-					updateObj(container.getChildAt(i));
-		};
-		
-		updateObj($obj);
+		onMoved( $obj ); // temp solution - not good for large scrolls - shuod have an indexed container offset instead
+	}
+}
+
+internal class InvalidationItem
+{
+	public var gui:GuiObject;
+	public var updateIndex:Boolean = false;
+	public var addIndex:Boolean = false;
+	public var removeIndex:Boolean = false;
+	
+	public function InvalidationItem($gui:GuiObject, $updateIndex:Boolean, $addIndex:Boolean, $removeIndex:Boolean )
+	{ 
+		gui = $gui;
+		updateIndex = $updateIndex;
+		addIndex = $addIndex;
+		removeIndex = $removeIndex;
 	}
 }
 

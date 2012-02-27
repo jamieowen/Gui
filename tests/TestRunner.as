@@ -36,8 +36,8 @@ package {
 			//core.run(UtilsSuite);
 			//core.run(IndexerSuite);
 			
-			core.run(RendererSuite);
-			//core.run(CoreSuite);
+			//core.run(RendererSuite);
+			core.run(CoreSuite);
 		}
 	}
 }

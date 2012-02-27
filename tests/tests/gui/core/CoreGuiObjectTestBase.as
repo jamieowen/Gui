@@ -277,7 +277,7 @@ package tests.gui.core {
 		public function testAddRemoveNested():void
 		{
 			var createCount:uint = 0;
-			
+			assertEquals( "Check invalidation list size 00", 0, guiContext.invalidation.invalidated.length );
 			// create a branch with 2 containers and x children.
 			var createBranch:Function = function( $container:GuiObjectContainer,$numChildren:uint, $depth:uint, $maxDepth:uint ):void
 			{
@@ -389,5 +389,29 @@ package tests.gui.core {
 			
 			assertEquals( "Indexer size 6", 1, guiContext.indexer.numItems );
 		}
+		
+		[Test(order=11)]
+		public function testMoveResizeContextDispatch():void
+		{
+			var container:GuiObjectContainer = new guiObjectContainerClass();
+			var obj:GuiObject = new guiObjectClass();
+			
+			container.addChild( obj );
+			
+			guiObjectContainer.addChild(container);
+			
+			obj.x = 10;
+			assertEquals( "invalidation 'moved' for x changed", 1, guiContext.invalidation.stats.moved );
+			obj.y = 10;
+			assertEquals( "invalidation 'moved' for y changed", 2, guiContext.invalidation.stats.moved );
+			
+			container.x = 10;
+			assertEquals( "invalidation 'moved' for x changed", 3, guiContext.invalidation.stats.moved );
+			container.y = 10;
+			assertEquals( "invalidation 'moved' for y changed", 4, guiContext.invalidation.stats.moved );
+			
+			container.addChild(container);
+		}
+		
 	}
 }
