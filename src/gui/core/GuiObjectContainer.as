@@ -1,5 +1,7 @@
 package gui.core
 {
+	import dump.nodes.SceneGroupNode;
+	import dump.nodes.SceneNode;
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
@@ -15,13 +17,19 @@ package gui.core
 			return _children.length;
 		}
 
-		public function GuiObjectContainer()
+		public function GuiObjectContainer($node:SceneNode=null)
 		{
-			super();
+			super($node);
+			
+			if( $node == null )
+			{
+				setNode(new SceneGroupNode());
+				node.setGuiObject(this);
+			}
 			
 			if (getQualifiedClassName(this) == "gui.core::GuiObjectContainer")
 				throw new AbstractClassError();
-
+			
 			_children = new Vector.<GuiObject>();
 		}
 
@@ -43,6 +51,8 @@ package gui.core
 				
 				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer );
+				
+				( node as SceneGroupNode ).add(child.node);
 				
 				if( context )
 				{
@@ -75,6 +85,8 @@ package gui.core
 				
 				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child) );
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer );
+				
+				( node as SceneGroupNode ).remove(child.node);
 				
 				if( context )
 				{

@@ -74,7 +74,7 @@ package gui.render {
 		/**
 		 * Generic render implementation - most renderers can use this and override the addSkin() and removeSkin() methods.
 		 */
-		protected function render( $queue:Vector.<GuiRenderRequest> ):void
+		public function render( $queue:Vector.<GuiRenderRequest> ):void
 		{
 			var i:uint;
 			var l:uint;

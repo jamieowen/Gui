@@ -44,7 +44,7 @@ package gui.renderers
 		 */
 		public function StarlingGuiRenderer($context:GuiContext, $starling:DisplayObjectContainer, $defaultTexture:Texture)
 		{
-			factory 	= new Factory( new FactoryMap(StarlingGuiBitmap) );
+			factory 		= new Factory( new FactoryMap(StarlingGuiBitmap) );
 			_starling 		= $starling;
 			_defaultTexture = $defaultTexture;
 			
@@ -54,7 +54,7 @@ package gui.renderers
 		/**
 		 * Render implementation for Starling container.
 		 */
-		override protected function render($queue:Vector.<GuiRenderRequest>):void
+		override public function render($queue:Vector.<GuiRenderRequest>):void
 		{
 			if( requiresRender )
 			{

@@ -1,4 +1,5 @@
 package gui.core {
+	import dump.nodes.SceneNode;
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
@@ -14,6 +15,8 @@ package gui.core {
 	 */
 	public class GuiObject extends EventDispatcher
 	{
+		private var _node:SceneNode;
+		
 		private var _name:String;
 		private var _skin:String;
 		
@@ -29,6 +32,11 @@ package gui.core {
 		private var _visible:Boolean;
 		
 		private var _parent:GuiObjectContainer;
+		
+		public function get node():SceneNode
+		{
+			return _node;
+		}
 		
 		/**
 		 * Gets the x coordinate.
@@ -197,19 +205,44 @@ package gui.core {
 		}
 		
 		/**
+		 * 
+		 */
+		public function get visible():Boolean
+		{
+			return _visible;		
+		}
+		
+		/**
+		 *
+		 */
+		public function set visible( $visible:Boolean ):void
+		{
+			_visible = $visible;
+		}
+		
+		/**
 		 * Creates a new GuiObject
 		 */
-		public function GuiObject()
+		public function GuiObject( $node:SceneNode = null )
 		{
 			if (getQualifiedClassName(this) == "gui.core::GuiObject")
 				throw new AbstractClassError();
-				
+			
+			if( $node == null ) _node = new SceneNode(this);
+			
 			_x = _y = _width = _height = 0.0;
 			//_rotation = 0.0;
 			//_scaleX = _scaleY = 1.0;
 			_name = _skin = "";
 			_visible = true;
 		}
+		
+		/** Update the objects internals**/
+		public function update():void
+		{
+			
+		}
+		
 		
 		// Methods
 		
@@ -240,14 +273,20 @@ package gui.core {
 		
 		public function getBounds():Rectangle
 		{
-			return new Rectangle(0,0,width,height);
+			var rect:Rectangle = new Rectangle(0,0,width,height);
+			return rect;
 		}
 	
-		
 		internal function setParent($value:GuiObjectContainer):void 
 		{ 
 			// events/notifications sent by container.
 			_parent = $value;
+		}
+		
+		/** Should not be re-set.  This is to help pass nodes through after constructor calls to super() */
+		internal function setNode($value:SceneNode):void
+		{
+			_node = $value;
 		}
 	}
 }

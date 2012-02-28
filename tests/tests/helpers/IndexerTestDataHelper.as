@@ -1,5 +1,6 @@
 package tests.helpers
 {
+	import dump.nodes.SceneGroupNode;
 	import flash.geom.Rectangle;
 	import gui.indexing.IGuiIndexer;
 	import gui.core.GuiObject;
@@ -73,7 +74,7 @@ package tests.helpers
 					{
 						// add another container and add again
 						cont = new TestGuiObjectContainer();
-						cont.name = "squareContainer";
+						cont.name = "square";
 						$container.addChild( cont );
 						cont.x = bg.x;
 						cont.y = bg.y;
@@ -90,10 +91,81 @@ package tests.helpers
 				}
 				ix++;
 			}
-			
-			
 		}
 		
+		/**
+		 * Recursively creates a box shape with additional inner squares that are clipped.
+		 * 
+		 * @param $container The Container to create in.
+		 * @param $padding The padding to apply to each box
+		 * @param $size The width/height to apply to the supplied container.
+		 * @param $depth The current depth of recursion
+		 * @param $maxDepth The max depth of recursion.
+		 * @param $count A point object storing the total number of GuiObjectContainer's in x, and GuiObject's in y. Including the initial supplied container.
+		 */
+		public static function createClipped4Square($container:GuiObjectContainer,$size:Number, $padding:Number, $depth:uint, $maxDepth:uint, $count:Point ):void
+		{ 
+			$depth++;
+			
+			$container.width = $container.height = $size;
+			
+			$count.x++;
+			
+			// create 4 children and add again.
+			var ix:int = 0;
+			var iy:int = 0;
+			var cont:GuiObjectContainer;
+			var bg:GuiObject;
+			$size = ($size - ( $padding*3 ))/2;
+			
+			var leafNodeSize:Number;
+			// add 4 squares inside this.
+			while(ix<2)
+			{
+				iy = 0;
+				while(iy<5) // add extra for clipped 
+				{
+					bg = new TestGuiObject();
+					bg.skin = "square";
+					bg.name = "square";
+					$container.addChild( bg );
+					bg.width = bg.height = $size;
+					bg.x = (ix*$size) + ( $padding*(ix+1));
+					bg.y = (iy*$size) + ( $padding*(iy+1));
+					$count.y++;
+					
+					if( iy>=2 )
+					{
+						bg.skin = "squareClip";
+					}
+					
+					if( iy<2 ) // only add containers for first 4 boxes
+					{
+						if( $depth < $maxDepth )
+						{
+							// add another container and add again
+							cont = new TestGuiObjectContainer();
+							cont.name = "square";
+							$container.addChild( cont );
+							cont.x = bg.x;
+							cont.y = bg.y;
+							if( $depth>1 && ix%2==0) ( cont.node as SceneGroupNode ).clipChildren = true; 
+							
+							createClipped4Square(cont, $size, $padding, $depth, $maxDepth, $count);
+						}else
+						{
+							leafNodeSize = $size;
+							if( isNaN(leafNodeSize)||leafNodeSize<0.0 )
+								throw new Error("Error generating squares - Leaf node size too small! Check the depth or size/padding/etc.");
+						}
+					}
+					
+					iy++;
+				}
+				ix++;
+			}
+		}
+	
 		/**
 		 * Calculates the expected number of containers and objects in the create4Square() output.
 		 */
