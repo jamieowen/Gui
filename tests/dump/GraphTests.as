@@ -52,6 +52,15 @@ package dump {
 			display.skins.register("squareClip", DisplayListGuiBitmap, {bitmapData:bitmapClip});
 			
 			
+			var test:GuiContainer = new GuiContainer();
+			var contain:GuiContainer = new GuiContainer();
+			var test2:GuiContainer = new GuiContainer();
+			test2.addChild( test );
+			contain.addChild( test2 );
+			
+			contain.addEventListener( Event.COMPLETE, onTest);
+			
+			test.dispatchEvent( new Event(Event.COMPLETE,true) );
 			
 			graphics.clear();
 			graphics.lineStyle(1,0x0000FF);
@@ -59,6 +68,11 @@ package dump {
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			
+		}
+		
+		protected function onTest($event:Event):void
+		{
+			trace( "TESTSTST");
 		}
 		
 		protected function onEnterFrame( $event:Event ):void

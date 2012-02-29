@@ -13,7 +13,7 @@ package gui.core {
 	/**
 	 * Base class for all GuiObjects to inherit from.
 	 */
-	public class GuiObject extends EventDispatcher
+	public class GuiObject extends GuiEventDispatcher
 	{
 		protected var _node:SceneNode;
 		
@@ -225,6 +225,8 @@ package gui.core {
 		 */
 		public function GuiObject( $node:SceneNode = null )
 		{
+			super(this);
+			
 			if (getQualifiedClassName(this) == "gui.core::GuiObject")
 				throw new AbstractClassError();
 			

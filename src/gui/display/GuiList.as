@@ -91,7 +91,7 @@ package gui.display {
 		
 		protected function onScroll( $event:GuiEvent ):void
 		{
-			dispatchEvent( $event );
+			dispatchEvent( $event.clone() );
 		}
 		
 	}
