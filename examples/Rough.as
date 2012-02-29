@@ -7,7 +7,7 @@ package
 	import flash.utils.getTimer;
 	import gui.core.GuiContext;
 	import gui.display.GuiBitmap;
-	import gui.display.GuiScrollContainer;
+	import gui.display.GuiContainer;
 	import gui.indexing.qtree.QTreeNode;
 	import gui.renderers.StarlingGuiRenderer;
 
@@ -20,7 +20,7 @@ package
 	{
 		public var guiContext:GuiContext;
 		public var starlingRenderer:StarlingGuiRenderer;
-		public var subContainer:GuiScrollContainer;
+		public var subContainer:GuiContainer;
 		
 		public function Rough()
 		{
@@ -66,12 +66,12 @@ package
 				if( i == 5 )
 				{
 					// add a clipped container..
-					var container:GuiScrollContainer = new GuiScrollContainer();
+					var container:GuiContainer = new GuiContainer();
 					container.height = 30;
 					container.x = 100;
 					container.y = 100 + (i*(bitmap.width+1));
 					container.width = 100; // let it be clipped.
-					container.clipChildren = true;
+					//container.clipChildren = true;
 					for( var b:int = 0; b<100; b++ )
 					{
 						bitmap = new GuiBitmap();

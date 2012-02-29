@@ -71,6 +71,12 @@ package dump.traverser
 			_viewRect.y += matrix.ty;
 		}
 		
+		private function pushMatrixRect( $rect:Rectangle, $matrix:Matrix ):void
+		{
+			$rect.x -= $matrix.tx;
+			$rect.y -= $matrix.ty;
+		}
+		
 		public function enterNode( $node:SceneNode ):Boolean
 		{
 			return $node.inView( _viewRect );
@@ -87,13 +93,13 @@ package dump.traverser
 			_viewRect.width = _toRender.width;
 			_viewRect.height = _toRender.height;
 			
-			trace( "Viewrect : " + _viewRect );
+			//trace( "Viewrect : " + _viewRect );
 			_toRender.node.update();
 			_toRender.node.collect(this);
 			
 			// then pass _renderList to render()
 			
-			trace( "Render : " + _renderList.length );
+			//trace( "Render count: " + _renderList.length );
 		}
 		
 		public function addToRender( $node:SceneNode ):void

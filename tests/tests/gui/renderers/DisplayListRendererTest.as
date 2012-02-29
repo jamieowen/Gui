@@ -2,7 +2,7 @@ package tests.gui.renderers {
 	import gui.core.GuiContext;
 	import gui.core.GuiObject;
 	import gui.core.GuiObjectContainer;
-	import gui.display.GuiScrollContainer;
+	import gui.display.GuiContainer;
 	import gui.render.GuiRenderer;
 	import gui.renderers.DisplayListRenderer;
 	import gui.renderers.displaylist.DisplayListGuiBitmap;
@@ -26,7 +26,7 @@ package tests.gui.renderers {
 	*/
 	public class DisplayListRendererTest 
 	{
-		public static var contextRoot:GuiScrollContainer;
+		public static var contextRoot:GuiContainer;
 		public static var context:GuiContext;
 		public static var renderer:DisplayListRenderer;
 		
@@ -42,7 +42,7 @@ package tests.gui.renderers {
 			var sprite:Sprite = new Sprite();
 			UIImpersonator.addChild(sprite);
 			
-			contextRoot = new GuiScrollContainer();
+			contextRoot = new GuiContainer();
 			contextRoot.name = "contextRoot";
 			
 			context  	= new GuiContext(contextRoot);

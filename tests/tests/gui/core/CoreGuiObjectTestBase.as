@@ -31,6 +31,9 @@ package tests.gui.core {
 	*/
 	public class CoreGuiObjectTestBase 
 	{
+		
+		public static const CHECK_INVALIDATION_OR_INDEX:Boolean = false;
+		
 		public static var guiObjectClass:Class;
 		public static var guiObjectContainerClass:Class;
 		
@@ -390,7 +393,7 @@ package tests.gui.core {
 			assertEquals( "Indexer size 6", 1, guiContext.indexer.numItems );
 		}
 		
-		[Test(order=11)]
+		/**[Test(order=11)]
 		public function testMoveResizeContextDispatch():void
 		{
 			var container:GuiObjectContainer = new guiObjectContainerClass();
@@ -411,7 +414,7 @@ package tests.gui.core {
 			assertEquals( "invalidation 'moved' for y changed", 4, guiContext.invalidation.stats.moved );
 			
 			container.addChild(container);
-		}
+		}**/
 		
 	}
 }

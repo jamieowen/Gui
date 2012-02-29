@@ -7,11 +7,15 @@ package gui.core
 
 	import flash.utils.getQualifiedClassName;
 	
-
 	public class GuiObjectContainer extends GuiObject
 	{
 		private var _children:Vector.<GuiObject>;
-			
+		
+		public function get nodeAsGroup():SceneGroupNode
+		{
+			return node as SceneGroupNode;
+		}
+		
 		public function get numChildren():int
 		{
 			return _children.length;

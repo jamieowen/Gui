@@ -24,6 +24,9 @@ package dump {
 	[SWF(width=1000,height=1000,frameRate=60)]
 	public class GraphTests extends Sprite
 	{
+		private var renderer:RenderCollector;
+		private var display:DisplayListRenderer;
+		
 		public function GraphTests()
 		{
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -32,24 +35,23 @@ package dump {
 			var toRender:GuiObjectContainer = new GuiContainer();
 			var count:Point = new Point();
 			
-			IndexerTestDataHelper.createClipped4Square(toRender, 800, 5, 0, 5, count );
+			IndexerTestDataHelper.createClippedScrolling4Square(toRender, 800, 7, 0, 2, count );
+			//IndexerTestDataHelper.createClipped4Square(toRender, 800, 7, 0, 4, count );
+			//IndexerTestDataHelper.create4Square(toRender, 800, 5, 0, 5, count );
 			trace( count );
 			
-			var renderer:RenderCollector = new RenderCollector(toRender);
+			renderer = new RenderCollector(toRender);
 			
-			var time:Number = getTimer();
-			renderer.render();
-			time = getTimer()-time;
-			trace( "Render time : " + (time/1000) );
+
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			var bitmapClip:BitmapData = new BitmapData(100, 100,true,0x99000000);
-			var display:DisplayListRenderer;
+			
 			display 	= new DisplayListRenderer(new GuiContext(GuiContainer), this);
 			display.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("squareClip", DisplayListGuiBitmap, {bitmapData:bitmapClip});
 			
-			display.render( renderer.renderList );
+			
 			
 			graphics.clear();
 			graphics.lineStyle(1,0x0000FF);
@@ -61,7 +63,11 @@ package dump {
 		
 		protected function onEnterFrame( $event:Event ):void
 		{
-			
+			var time:Number = getTimer();
+			renderer.render();
+			time = getTimer()-time;
+			//trace( "Render time : " + (time/1000) );
+			display.render( renderer.renderList );
 		}
 	}
 }

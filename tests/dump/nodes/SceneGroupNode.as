@@ -49,14 +49,17 @@ package dump.nodes
 		{
 			if(renderer.enterNode(this))
 			{
-				if( clipChildren ) renderer.pushClipRect(guiObject.getGlobalBounds());
-					
 				if( renderer.renderGroups ) renderer.addToRender( this );
+				if( clipChildren ) renderer.pushClipRect(guiObject.getBounds());
 				
+				renderer.pushMatrix( guiObject.transformationMatrix );
+			
 				var i:uint = 0;
 				var l:uint = _children.length;
 				while( i<l )
 					_children[i++].collect(renderer);
+				
+				renderer.popMatrix();
 				
 				if( clipChildren ) renderer.popClipRect();
 			}

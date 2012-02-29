@@ -38,13 +38,15 @@ package dump.nodes {
 		{
 			if( !guiObject.visible ) return false;
 			
-			var rect:Rectangle = $rect.intersection(_guiObject.getGlobalBounds());
-			if( rect.width*rect.height>0)
-				return true;
-			else
-				return false;
-
+			var res:Boolean = false;
 			
+			var rect:Rectangle = $rect.intersection(_guiObject.getBounds());
+			if( rect.width*rect.height>0)
+				res = true;
+			else
+				res = false;
+			
+			return res;
 			// TODO need to calculate clipping rectangles somewhere. this has to be passed into a render request object.
 		}
 		

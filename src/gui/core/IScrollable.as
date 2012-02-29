@@ -11,8 +11,6 @@ package gui.core
 	 */
 	public interface IScrollable 
 	{
-		function get scrollMatrix():Matrix;
-		
 		function get scrollPositionX():Number;
 		function set scrollPositionX($position:Number):void;
 		

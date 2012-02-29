@@ -15,21 +15,21 @@ package gui.core {
 	 */
 	public class GuiObject extends EventDispatcher
 	{
-		private var _node:SceneNode;
+		protected var _node:SceneNode;
 		
-		private var _name:String;
-		private var _skin:String;
+		protected var _name:String;
+		protected var _skin:String;
 		
-		private var _x:Number;
-		private var _y:Number;
-		private var _width:Number;
-		private var _height:Number;
+		protected var _x:Number;
+		protected var _y:Number;
+		protected var _width:Number;
+		protected var _height:Number;
 		
 		//private var _rotation:Number; // implement later
 		//private var _scaleX:Number;
 		//private var _scaleY:Number;
 		
-		private var _visible:Boolean;
+		protected var _visible:Boolean;
 		
 		private var _parent:GuiObjectContainer;
 		
@@ -200,7 +200,7 @@ package gui.core {
 			//if( _rotation != 0.0 ) m.rotate(_rotation);
 			if( _x != 0.0 || _y != 0.0 ) m.translate(_x,_y);
 			
-			if( parent is IScrollable && ( parent as IScrollable ).scrollMatrix ) m.concat( ( parent as IScrollable ).scrollMatrix );
+			//if( parent is IScrollable && ( parent as IScrollable ).scrollMatrix ) m.concat( ( parent as IScrollable ).scrollMatrix );
 			return m;
 		}
 		
@@ -273,7 +273,7 @@ package gui.core {
 		
 		public function getBounds():Rectangle
 		{
-			var rect:Rectangle = new Rectangle(0,0,width,height);
+			var rect:Rectangle = new Rectangle(_x,_y,_width,_height);
 			return rect;
 		}
 	
@@ -287,6 +287,11 @@ package gui.core {
 		internal function setNode($value:SceneNode):void
 		{
 			_node = $value;
+		}
+		
+		public function dispose():void
+		{
+			
 		}
 	}
 }
