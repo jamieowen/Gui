@@ -1,4 +1,5 @@
 package dump {
+	import gui.display.GuiList;
 	import flash.events.Event;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -40,40 +41,31 @@ package dump {
 			//IndexerTestDataHelper.create4Square(toRender, 800, 5, 0, 5, count );
 			trace( count );
 			
-			renderer = new RenderCollector(toRender);
+			var list:GuiList = new GuiList();
+			list.x = list.y = 0;
+			list.width = list.height = 200;
 			
-
+			toRender.addChild( list );
+			
+			renderer = new RenderCollector(toRender);
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			var bitmapClip:BitmapData = new BitmapData(100, 100,true,0x99000000);
 			
 			display 	= new DisplayListRenderer(new GuiContext(GuiContainer), this);
+			
+			display.skins.register("*", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("squareClip", DisplayListGuiBitmap, {bitmapData:bitmapClip});
 			
-			
-			var test:GuiContainer = new GuiContainer();
-			var contain:GuiContainer = new GuiContainer();
-			var test2:GuiContainer = new GuiContainer();
-			test2.addChild( test );
-			contain.addChild( test2 );
-			
-			contain.addEventListener( Event.COMPLETE, onTest);
-			
-			test.dispatchEvent( new Event(Event.COMPLETE,true) );
 			
 			graphics.clear();
 			graphics.lineStyle(1,0x0000FF);
 			graphics.drawRect(0, 0, renderer.viewRect.width, renderer.viewRect.height);
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			
 		}
 		
-		protected function onTest($event:Event):void
-		{
-			trace( "TESTSTST");
-		}
 		
 		protected function onEnterFrame( $event:Event ):void
 		{
@@ -82,6 +74,8 @@ package dump {
 			time = getTimer()-time;
 			//trace( "Render time : " + (time/1000) );
 			display.render( renderer.renderList );
+			
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
 }

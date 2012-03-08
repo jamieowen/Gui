@@ -232,5 +232,11 @@ package gui.core
 			
 			return false;
 		}
+		
+		public function removeAllChildren():void
+		{
+			while(numChildren)
+				removeChildAt(0);
+		}
 	}
 }

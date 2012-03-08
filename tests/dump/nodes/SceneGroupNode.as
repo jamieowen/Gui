@@ -59,6 +59,8 @@ package dump.nodes
 				while( i<l )
 					_children[i++].collect(renderer);
 				
+				trace( "collect: " + guiObject + " " + guiObject.getBounds() + " " + l );
+				
 				renderer.popMatrix();
 				
 				if( clipChildren ) renderer.popClipRect();
@@ -67,11 +69,6 @@ package dump.nodes
 		
 		override public function update():void
 		{
-			var i:uint = 0;
-			var l:uint = _children.length;
-			while( i<l )
-				_children[i++].update();
-			
 			//trace( "cont : " + _guiObject.depth );
 			if( _invalid )
 			{
@@ -80,6 +77,11 @@ package dump.nodes
 				// call update on guiObject
 				guiObject.update();
 			}
+			
+			var i:uint = 0;
+			var l:uint = _children.length;
+			while( i<l )
+				_children[i++].update();
 		}
 		
 		public function add( child:SceneNode ):void

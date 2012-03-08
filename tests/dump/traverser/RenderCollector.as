@@ -99,7 +99,7 @@ package dump.traverser
 			
 			// then pass _renderList to render()
 			
-			//trace( "Render count: " + _renderList.length );
+			trace( "Render count: " + _renderList.length );
 		}
 		
 		public function addToRender( $node:SceneNode ):void

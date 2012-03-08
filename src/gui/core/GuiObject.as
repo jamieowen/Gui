@@ -3,7 +3,6 @@ package gui.core {
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
-	import flash.events.EventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -15,6 +14,8 @@ package gui.core {
 	 */
 	public class GuiObject extends GuiEventDispatcher
 	{
+		protected var changedSize:Boolean;
+				
 		protected var _node:SceneNode;
 		
 		protected var _name:String;
@@ -91,6 +92,7 @@ package gui.core {
 		{
 			if( _width == $width ) return;
 			_width = $width;
+			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
 			if( context ) context.invalidation.onResized(this);
 		}
@@ -110,6 +112,7 @@ package gui.core {
 		{
 			if( _height == $height ) return;
 			_height = $height;
+			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
 			if( context ) context.invalidation.onResized(this);
 		}
@@ -237,12 +240,17 @@ package gui.core {
 			//_scaleX = _scaleY = 1.0;
 			_name = _skin = "";
 			_visible = true;
+			
+			changedSize = false;
 		}
 		
 		/** Update the objects internals**/
 		public function update():void
 		{
-			
+			if( changedSize )
+			{
+				changedSize = false;
+			}
 		}
 		
 		
@@ -294,6 +302,11 @@ package gui.core {
 		public function dispose():void
 		{
 			
+		}
+		
+		public function invalidate():void
+		{
+			_node.invalidate();
 		}
 	}
 }
