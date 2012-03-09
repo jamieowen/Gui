@@ -151,7 +151,7 @@ package gui.utils
 			var mapping:SkinFactoryMapping;
 			
 			mapping = _matchCache[$pattern];
-			if( mapping != null ) return mapping; // return if found in cache
+			if( mapping != null )return mapping; // return if found in cache
 			
 			// list.listItem - matches list.listItem and anything.list.listItem
 			// listItem - matches l

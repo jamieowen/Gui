@@ -59,7 +59,7 @@ package dump.nodes
 				while( i<l )
 					_children[i++].collect(renderer);
 				
-				trace( "collect: " + guiObject + " " + guiObject.getBounds() + " " + l );
+				//trace( "collect: " + guiObject + " " + guiObject.getBounds() + " " + l );
 				
 				renderer.popMatrix();
 				

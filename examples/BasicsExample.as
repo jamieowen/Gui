@@ -85,7 +85,7 @@ package {
 			// renderer output
 			var root:DisplayObjectContainer = (starling.stage.root as DisplayObjectContainer).getChildAt(0) as DisplayObjectContainer;
 			// renderer
-			starlingGui 	= new StarlingGuiRenderer(gui,root,Texture.fromBitmapData( new BitmapData(640, 88,false,0xFF444444) ) as starling.textures.Texture );
+			//starlingGui 	= new StarlingGuiRenderer(gui,root,Texture.fromBitmapData( new BitmapData(640, 88,false,0xFF444444) ) as starling.textures.Texture );
 			
 			// doob stats
 			//var stats:Stats = new Stats();

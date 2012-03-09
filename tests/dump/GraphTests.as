@@ -58,7 +58,6 @@ package dump {
 			display.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("squareClip", DisplayListGuiBitmap, {bitmapData:bitmapClip});
 			
-			
 			graphics.clear();
 			graphics.lineStyle(1,0x0000FF);
 			graphics.drawRect(0, 0, renderer.viewRect.width, renderer.viewRect.height);

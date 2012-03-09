@@ -16,16 +16,7 @@ package gui.renderers.starling
 			super(texture);
 		}
 		
-		public function attach($newGui:GuiObject,$renderer:GuiRenderer):void
-		{
-			
-		}
-		
 
-		public function release($previousGui:GuiObject,$renderer:GuiRenderer):void
-		{
-			
-		}
 		
 		/**
 		 * Called when the GuiObject it is rendering changes for any reason.
@@ -36,9 +27,14 @@ package gui.renderers.starling
 			
 			var item:GuiRenderRequest = $request;
 			
-			trace( "Render : " + item.guiRect  );
+			//trace( "Render : " + item.guiRect  );
 			
-			if( item.clipRect )
+			this.x 		= item.guiRect.x;
+			this.y 		= item.guiRect.y;
+			this.width 	= item.guiRect.width;
+			this.height = item.guiRect.height;
+				
+			/**if( item.clipRect )
 			{
 				
 				this.x 		= item.clipRect.x;
@@ -51,9 +47,20 @@ package gui.renderers.starling
 				this.y 		= item.guiRect.y;
 				this.width 	= item.guiRect.width;
 				this.height = item.guiRect.height;
-			}
+			}**/
 					
 			this.readjustSize();
+		}
+		
+		public function attach($newGui:GuiObject,$renderer:GuiRenderer):void
+		{
+			
+		}
+		
+
+		public function release($previousGui:GuiObject,$renderer:GuiRenderer):void
+		{
+			
 		}
 	}
 }
