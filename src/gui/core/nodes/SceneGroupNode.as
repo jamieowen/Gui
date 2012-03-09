@@ -1,7 +1,7 @@
-package dump.nodes 
+package gui.core.nodes 
 {
-	import dump.traverser.RenderCollector;
 	import gui.core.GuiObject;
+	import gui.core.traverser.RenderCollector;
 	
 	/**
 	* Class Description

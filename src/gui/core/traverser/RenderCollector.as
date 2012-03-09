@@ -1,10 +1,10 @@
-package dump.traverser
+package gui.core.traverser
 {
-	import gui.render.GuiRenderRequest;
 	import flash.geom.Matrix;
-	import gui.core.GuiObjectContainer;
 	import flash.geom.Rectangle;
-	import dump.nodes.SceneNode;
+	import gui.core.GuiObjectContainer;
+	import gui.core.nodes.SceneNode;
+	import gui.render.GuiRenderRequest;
 	
 	/**
 	 * @author jamieowen

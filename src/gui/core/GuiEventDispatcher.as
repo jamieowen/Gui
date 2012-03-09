@@ -23,7 +23,7 @@ package gui.core
 		{
 			if( $event.bubbles )
 			{
-				// simple bubbling impl for now. - not handling any preventDefault(), etc.
+				// TODO : simple bubbling impl for now. - not handling any preventDefault(), etc.
 				var res:Boolean = super.dispatchEvent( $event );
 				if( this.hasOwnProperty("parent") && this["parent"] is IEventDispatcher )
 					res = ( this["parent"] as IEventDispatcher ).dispatchEvent( $event );

@@ -1,12 +1,12 @@
 package tests.helpers
 {
-	import gui.display.GuiContainer;
-	import dump.nodes.SceneGroupNode;
-	import flash.geom.Rectangle;
-	import gui.indexing.IGuiIndexer;
-	import gui.core.GuiObject;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import gui.core.GuiObject;
 	import gui.core.GuiObjectContainer;
+	import gui.core.nodes.SceneGroupNode;
+	import gui.display.GuiContainer;
+	import gui.indexing.IGuiIndexer;
 	
 	/**
 	* Helper class for generating nested GuiObject data.

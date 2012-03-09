@@ -1,23 +1,23 @@
 package dump {
-	import gui.display.GuiList;
-	import flash.events.Event;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
-	import org.osmf.display.ScaleMode;
-	import gui.renderers.displaylist.DisplayListGuiBitmap;
-	import flash.display.BitmapData;
-	import gui.core.GuiContext;
-	import gui.renderers.DisplayListRenderer;
+	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.utils.getTimer;
-	import dump.traverser.RenderCollector;
-
+	import gui.core.GuiContext;
 	import gui.core.GuiObjectContainer;
+	import gui.core.traverser.RenderCollector;
 	import gui.display.GuiContainer;
-
+	import gui.display.GuiList;
+	import gui.renderers.DisplayListRenderer;
+	import gui.renderers.displaylist.DisplayListGuiBitmap;
+	import org.osmf.display.ScaleMode;
 	import tests.helpers.IndexerTestDataHelper;
 
-	import flash.display.Sprite;
-	import flash.geom.Point;
+
+
 
 	/**
 	 * @author jamieowen

@@ -1,11 +1,11 @@
 package gui.core
 {
-	import dump.nodes.SceneGroupNode;
-	import dump.nodes.SceneNode;
+	import flash.utils.getQualifiedClassName;
+	import gui.core.nodes.SceneGroupNode;
+	import gui.core.nodes.SceneNode;
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
-	import flash.utils.getQualifiedClassName;
 	
 	public class GuiObjectContainer extends GuiObject
 	{

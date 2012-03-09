@@ -1,9 +1,9 @@
-package dump.nodes {
-	import dump.traverser.RenderCollector;
-
-	import gui.core.GuiObject;
-
+package gui.core.nodes {
 	import flash.geom.Rectangle;
+	import gui.core.GuiObject;
+	import gui.core.traverser.RenderCollector;
+
+
 
 	/**
 	 * @author jamieowen

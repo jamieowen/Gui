@@ -33,8 +33,6 @@ package starling
 			list.x = list.y = 0;
 			list.width = list.height = 200;
 			
-			
-			
 			container.addChild( list );
 		}
 	}

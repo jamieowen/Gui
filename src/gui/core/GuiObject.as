@@ -1,12 +1,12 @@
 package gui.core {
-	import dump.nodes.SceneNode;
-	import gui.errors.AbstractClassError;
-	import gui.events.GuiEvent;
-
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
+	import gui.core.nodes.SceneNode;
+	import gui.errors.AbstractClassError;
+	import gui.events.GuiEvent;
+
 	
 	
 	/**
