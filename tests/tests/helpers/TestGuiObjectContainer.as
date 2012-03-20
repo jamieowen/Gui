@@ -1,6 +1,6 @@
 package tests.helpers
 {
-	import gui.core.GuiObjectContainer;
+	import gui.core.objects.GuiObjectContainer;
 	/**
 	* A bare extended GuiObjectContainer for instantiation used throughout tests - DO NOT MODIFY!
 	*

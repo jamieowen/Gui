@@ -1,10 +1,10 @@
 package tests.gui.utils {
-	import gui.core.GuiObject;
-	import flash.display.Sprite;
 	import flash.display.BitmapData;
-	import gui.render.IGuiObjectSkin;
-	import gui.render.GuiRenderer;
+	import flash.display.Sprite;
+	import gui.core.objects.GuiObject;
 	import gui.render.GuiRenderRequest;
+	import gui.render.GuiRenderer;
+	import gui.render.IGuiObjectSkin;
 
 	/**
 	 * Test class for a skin..

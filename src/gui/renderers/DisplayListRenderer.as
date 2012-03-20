@@ -1,11 +1,11 @@
 package gui.renderers
 {
-	import gui.core.GuiContext;
+	import gui.core.context.GuiContext;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import gui.render.GuiRenderer;
 	import gui.render.IGuiObjectSkin;
 
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
 	/**
 	* Renderer for classic Flash Display List.
 	*

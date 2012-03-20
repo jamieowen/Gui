@@ -1,6 +1,6 @@
 package gui.core.nodes {
 	import flash.geom.Rectangle;
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	import gui.core.traverser.RenderCollector;
 
 

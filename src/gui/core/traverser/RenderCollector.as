@@ -1,9 +1,10 @@
 package gui.core.traverser
 {
+	import gui.core.context.nsGuiInternal;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import gui.core.GuiObjectContainer;
 	import gui.core.nodes.SceneNode;
+	import gui.core.objects.GuiObjectContainer;
 	import gui.render.GuiRenderRequest;
 	
 	/**
@@ -11,6 +12,8 @@ package gui.core.traverser
 	 */
 	public class RenderCollector
 	{
+		use namespace nsGuiInternal;
+		
 		private var _renderList:Vector.<GuiRenderRequest>;
 		private var _viewRect:Rectangle;
 		private var _toRender:GuiObjectContainer;

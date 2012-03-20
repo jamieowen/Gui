@@ -1,7 +1,5 @@
 package gui.core
 {
-	import flash.geom.Matrix;
-	
 	/**
 	 * Scrollable interface to attach to containers.
 	 * 

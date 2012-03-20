@@ -1,7 +1,7 @@
 package gui.utils
 {
 	import flash.utils.Dictionary;
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	import gui.render.IGuiObjectSkin;
 	/**
 	* The SkinFactory enables mapping of the <code>skin</code> property of a <code>GuiObject</code> to

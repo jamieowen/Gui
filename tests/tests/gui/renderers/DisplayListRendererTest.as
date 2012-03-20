@@ -1,24 +1,24 @@
 package tests.gui.renderers {
-	import gui.core.GuiContext;
-	import gui.core.GuiObject;
-	import gui.core.GuiObjectContainer;
-	import gui.display.GuiContainer;
-	import gui.render.GuiRenderer;
-	import gui.renderers.DisplayListRenderer;
-	import gui.renderers.displaylist.DisplayListGuiBitmap;
-
-	import tests.helpers.IndexerTestDataHelper;
-
-	import org.flexunit.asserts.assertTrue;
-	import org.flexunit.async.Async;
-	import org.fluint.uiImpersonation.UIImpersonator;
-
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
+	import gui.core.context.GuiContextOld;
+	import gui.core.objects.GuiObject;
+	import gui.core.objects.GuiObjectContainer;
+	import gui.display.GuiContainer;
+	import gui.render.GuiRenderer;
+	import gui.renderers.DisplayListRenderer;
+	import gui.renderers.displaylist.DisplayListGuiBitmap;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.async.Async;
+	import org.fluint.uiImpersonation.UIImpersonator;
+	import tests.helpers.IndexerTestDataHelper;
+
+
+
 	/**
 	* Test Description
 	*
@@ -27,7 +27,7 @@ package tests.gui.renderers {
 	public class DisplayListRendererTest 
 	{
 		public static var contextRoot:GuiContainer;
-		public static var context:GuiContext;
+		public static var context:GuiContextOld;
 		public static var renderer:DisplayListRenderer;
 		
 		// THE TESTING FUNCTIONS CAN REALLY BE MOVED TO A BASE CLASS - AS WE DID WITH INDEXER TESTS.
@@ -45,7 +45,7 @@ package tests.gui.renderers {
 			contextRoot = new GuiContainer();
 			contextRoot.name = "contextRoot";
 			
-			context  	= new GuiContext(contextRoot);
+			context  	= new GuiContextOld(contextRoot);
 			renderer 	= new DisplayListRenderer(context, sprite);
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
@@ -115,7 +115,7 @@ package tests.gui.renderers {
 		{
 			// navigates to a leaf node and removes the container.
 			
-			var contextRef:GuiContext = context;
+			var contextRef:GuiContextOld = context;
 			var rendererRef:GuiRenderer = renderer;
 			
 			var removeContainer:Function = function($container:GuiObjectContainer, $timer:Timer):void

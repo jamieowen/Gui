@@ -1,5 +1,5 @@
 package gui.display {
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 
 	/**
 	 * @author jamieowen

@@ -1,16 +1,16 @@
 package tests.gui.core {
-	import org.flexunit.asserts.assertEquals;
-	import gui.errors.AbstractClassError;
-	import flash.utils.getQualifiedClassName;
-	import gui.core.GuiContext;
-	import gui.core.GuiObjectContainer;
-	import gui.events.GuiEvent;
-	import org.flexunit.async.Async;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.getQualifiedClassName;
+	import gui.core.context.GuiContextOld;
+	import gui.core.objects.GuiObject;
+	import gui.core.objects.GuiObjectContainer;
+	import gui.errors.AbstractClassError;
+	import gui.events.GuiEvent;
+	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
-	import gui.core.GuiObject;
+	import org.flexunit.async.Async;
 	
 	/**
 	* Base abstract class that enables the subclass to test a GuiObject's common
@@ -37,7 +37,7 @@ package tests.gui.core {
 		public static var guiObjectClass:Class;
 		public static var guiObjectContainerClass:Class;
 		
-		public static var guiContext:GuiContext;
+		public static var guiContext:GuiContextOld;
 		public static var guiObject:GuiObject;
 		public static var guiObjectContainer:GuiObjectContainer;
 		

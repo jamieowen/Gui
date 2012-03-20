@@ -1,9 +1,14 @@
 package {
-	import gui.core.GuiContext;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.events.Event;
+	import gui.core.context.GuiContextOld;
 	import gui.display.GuiBitmap;
 	import gui.renderers.StarlingGuiRenderer;
 	import gui.renderers.starling.display.Scale3;
-
 	import starling.core.Starling;
 	import starling.display.DisplayObjectContainer;
 	import starling.events.Event;
@@ -12,12 +17,7 @@ package {
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+
 
 	[SWF(width=740,height=1060,frameRate=60)]
 	public class BasicsExample extends Sprite
@@ -43,7 +43,7 @@ package {
 		private static var GuiSkinsXML : Class;
 		
 		// gui context.
-		public var gui:GuiContext;
+		public var gui:GuiContextOld;
 		
 		// gui starling renderer
 		public var starlingGui:StarlingGuiRenderer;

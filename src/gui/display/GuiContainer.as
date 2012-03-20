@@ -1,9 +1,9 @@
 package gui.display
 {
 	import flash.geom.Matrix;
-	import gui.events.GuiEvent;
 	import gui.core.IScrollable;
-	import gui.core.GuiObjectContainer;
+	import gui.core.objects.GuiObjectContainer;
+	import gui.events.GuiEvent;
 	
 	/**
 	* Class Description
@@ -26,7 +26,8 @@ package gui.display
 			if( _scrollPositionX == $position ) return;
 			_scrollPositionX = $position;
 			dispatchEvent( new GuiEvent(GuiEvent.SCROLL,this));
-			if( context ) context.invalidation.onScrolled(this);
+			
+			//if( context ) context.invalidation.onScrolled(this);
 		}
 		
 		public function get scrollPositionY():Number
@@ -39,7 +40,8 @@ package gui.display
 			if( _scrollPositionY == $position ) return;
 			_scrollPositionY = $position;
 			dispatchEvent( new GuiEvent(GuiEvent.SCROLL,this));
-			if( context ) context.invalidation.onScrolled(this);
+			
+			//if( context ) context.invalidation.onScrolled(this);
 		}
 		
 		override public function get transformationMatrix():Matrix

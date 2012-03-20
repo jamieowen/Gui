@@ -5,10 +5,10 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import gui.core.GuiContext;
+	import gui.core.context.GuiContextOld;
+	import gui.core.nodes.indexing.qtree.QTreeNode;
 	import gui.display.GuiBitmap;
 	import gui.display.GuiContainer;
-	import gui.indexing.qtree.QTreeNode;
 	import gui.renderers.StarlingGuiRenderer;
 
 	
@@ -18,7 +18,7 @@ package
 	[SWF(width=1280,height=768,frameRate=60)]
 	public class Rough extends Sprite
 	{
-		public var guiContext:GuiContext;
+		public var guiContext:GuiContextOld;
 		public var starlingRenderer:StarlingGuiRenderer;
 		public var subContainer:GuiContainer;
 		

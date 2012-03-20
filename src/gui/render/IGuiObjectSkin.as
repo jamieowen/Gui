@@ -1,6 +1,6 @@
 package gui.render
 {
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	public interface IGuiObjectSkin
 	{
 		/**

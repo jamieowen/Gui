@@ -1,7 +1,7 @@
 package gui.events
 {
 	import flash.events.Event;
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	
 	
 	public class GuiEvent extends Event

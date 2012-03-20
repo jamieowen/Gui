@@ -1,9 +1,9 @@
 package tests.gui.display
 {
-	import gui.core.GuiContext;
-	import tests.helpers.TestGuiObjectContainer;
+	import gui.core.context.GuiContextOld;
 	import gui.display.GuiBitmap;
 	import tests.gui.core.CoreGuiObjectTestBase;
+	import tests.helpers.TestGuiObjectContainer;
 	/**
 	* Class Description
 	*
@@ -21,7 +21,7 @@ package tests.gui.display
 			guiObject = new guiObjectClass();
 			
 			guiObjectContainer = new guiObjectContainerClass();
-			guiContext = new GuiContext(guiObjectContainer);
+			guiContext = new GuiContextOld(guiObjectContainer);
 		}
 		
 		[AfterClass]

@@ -1,8 +1,8 @@
 package gui.display
 {
-	import gui.enum.GuiScrollDirection;
 	import gui.core.IScrollable;
-	import gui.core.GuiObjectContainer;
+	import gui.core.objects.GuiObjectContainer;
+	import gui.enum.GuiScrollDirection;
 	
 	/**
 	* Class Description

@@ -1,7 +1,7 @@
 package starling.base {
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import gui.core.GuiContext;
+	import gui.core.context.GuiContextOld;
 	import gui.core.traverser.RenderCollector;
 	import gui.display.GuiContainer;
 	import gui.renderers.StarlingGuiRenderer;
@@ -50,7 +50,7 @@ package starling.base {
 			// TODO : need to introduce the context class again
 			container = new GuiContainer(); // container to add UIObjects to
 			collector = new RenderCollector(container); // collector traverses UI hierarchy and builds list of renderable items.
-			renderer  = new StarlingGuiRenderer(new GuiContext(GuiContainer), starling.stage.getChildAt(0) as DisplayObjectContainer ); // renders the collected items to the starling stage.
+			renderer  = new StarlingGuiRenderer(new GuiContextOld(GuiContainer), starling.stage.getChildAt(0) as DisplayObjectContainer ); // renders the collected items to the starling stage.
 			
 			container.width = container.height = 500;
 			

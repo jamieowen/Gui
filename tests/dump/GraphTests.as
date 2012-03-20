@@ -6,8 +6,8 @@ package dump {
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.getTimer;
-	import gui.core.GuiContext;
-	import gui.core.GuiObjectContainer;
+	import gui.core.context.GuiContextOld;
+	import gui.core.objects.GuiObjectContainer;
 	import gui.core.traverser.RenderCollector;
 	import gui.display.GuiContainer;
 	import gui.display.GuiList;
@@ -52,7 +52,7 @@ package dump {
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			var bitmapClip:BitmapData = new BitmapData(100, 100,true,0x99000000);
 			
-			display 	= new DisplayListRenderer(new GuiContext(GuiContainer), this);
+			display 	= new DisplayListRenderer(new GuiContextOld(GuiContainer), this);
 			
 			display.skins.register("*", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});

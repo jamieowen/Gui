@@ -1,13 +1,13 @@
 package gui.renderers.starling
 {
-	import starling.textures.TextureSmoothing;
-	import gui.core.GuiObject;
-	import gui.render.GuiRenderer;
+	import gui.core.objects.GuiObject;
 	import gui.render.GuiRenderRequest;
+	import gui.render.GuiRenderer;
 	import gui.render.IGuiObjectSkin;
-	
 	import starling.display.Image;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	
 	
 	public class StarlingGuiBitmap extends Image implements IGuiObjectSkin
 	{

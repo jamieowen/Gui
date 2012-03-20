@@ -1,9 +1,9 @@
-package gui.indexing
+package gui.core.nodes.indexing
 {
-	import gui.core.GuiObject;
+	import flash.geom.Rectangle;
+	import gui.core.objects.GuiObject;
 	import gui.render.GuiRenderRequest;
 
-	import flash.geom.Rectangle;
 	/**
 	 * @author jamieowen
 	 */

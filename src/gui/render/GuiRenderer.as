@@ -1,14 +1,15 @@
 package gui.render {
-	import gui.core.GuiContext;
-	import gui.core.GuiObject;
-	import gui.core.GuiObjectContainer;
+	import gui.events.GuiEvent;
+	import gui.core.context.GuiContext;
+	import flash.events.EventDispatcher;
+	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
+	import gui.core.objects.GuiObject;
+	import gui.core.objects.GuiObjectContainer;
 	import gui.errors.AbstractClassError;
 	import gui.errors.AbstractMethodError;
 	import gui.utils.SkinFactory;
 
-	import flash.events.EventDispatcher;
-	import flash.utils.Dictionary;
-	import flash.utils.getQualifiedClassName;
 	
 	/**
 	 * Simple base class for renderers.
@@ -65,10 +66,16 @@ package gui.render {
 			_skinFactory = $skinFactory == null ? new SkinFactory() : new $skinFactory();
 			
 			_context 	  		= $context;
-			_context.onRender 	= render;
+			
+			
 			
 			_skinHold  		= new Vector.<IGuiObjectSkin>();
 			_guiToSkinMap	= new Dictionary();
+		}
+		
+		protected function onRender( $event:GuiEvent ):void
+		{
+			
 		}
 		
 		/**

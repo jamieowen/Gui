@@ -1,17 +1,20 @@
-package gui.core
+package gui.core.context
 {
-	import gui.render.GuiRenderRequest;
-	import gui.indexing.IGuiIndexer;
-	import gui.indexing.NoIndexer;
-
+	import gui.core.context.nsGuiInternal;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
+	import gui.core.nodes.indexing.IGuiIndexer;
+	import gui.core.nodes.indexing.NoIndexer;
+	import gui.core.objects.GuiObject;
+	import gui.render.GuiRenderRequest;
 	
 	/**
 	 * 
 	 */
-	public class GuiContext
+	public class GuiContextOld
 	{
+		use namespace nsGuiInternal;
+		
 		/** helper class to handle change in the context **/
 		private var _invalidation:Invalidation;
 		
@@ -39,7 +42,7 @@ package gui.core
 			return _indexer; 
 		}
 		
-		public function GuiContext($guiRoot:*,$indexer:IGuiIndexer=null)
+		public function GuiContextOld($guiRoot:*,$indexer:IGuiIndexer=null)
 		{
 			super();
 			
@@ -83,16 +86,16 @@ package gui.core
 }
 
 import flash.utils.Dictionary;
-import gui.core.GuiContext;
-import gui.core.GuiObject;
-import gui.core.GuiObjectContainer;
+import gui.core.context.GuiContextOld;
+import gui.core.objects.GuiObject;
+import gui.core.objects.GuiObjectContainer;
 
 internal class Invalidation
 {
 	private var _invalid:Boolean = false;
 	private var _invalidated : Vector.<GuiObject>;
 	private var _items:Dictionary;
-	private var _context:GuiContext;
+	private var _context:GuiContextOld;
 	
 	private var _stats:InvalidationStats;
 		
@@ -140,7 +143,7 @@ internal class Invalidation
 		
 	}
 
-	public function Invalidation($context:GuiContext)
+	public function Invalidation($context:GuiContextOld)
 	{
 		_context = $context;
 		

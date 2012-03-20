@@ -1,8 +1,8 @@
-package gui.indexing.qtree
+package gui.core.nodes.indexing.qtree
 {
-	import gui.render.GuiRenderRequest;
 	import flash.geom.Rectangle;
-	import gui.indexing.QTree;
+	import gui.core.nodes.indexing.QTree;
+	import gui.render.GuiRenderRequest;
 	/**
 	 * @author jamieowen
 	 */

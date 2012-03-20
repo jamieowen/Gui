@@ -1,12 +1,13 @@
 package tests.helpers
 {
+	import gui.core.context.nsGuiInternal;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import gui.core.GuiObject;
-	import gui.core.GuiObjectContainer;
 	import gui.core.nodes.SceneGroupNode;
+	import gui.core.nodes.indexing.IGuiIndexer;
+	import gui.core.objects.GuiObject;
+	import gui.core.objects.GuiObjectContainer;
 	import gui.display.GuiContainer;
-	import gui.indexing.IGuiIndexer;
 	
 	/**
 	* Helper class for generating nested GuiObject data.
@@ -16,6 +17,8 @@ package tests.helpers
 	*/
 	public class IndexerTestDataHelper 
 	{
+		use namespace nsGuiInternal;
+		
 		// some constant values used by indexer tests.
 		// These values should be used consistantly throughout indexer tests to affect all outcomes in the IndexerSuite
 		public static const SQUARE_SMALL_DEPTH:uint		= 6;

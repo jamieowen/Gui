@@ -1,22 +1,53 @@
-package gui.core {
+package gui.core.objects
+{
+	import gui.core.context.GuiContext;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
+	import gui.core.context.nsGuiInternal;
 	import gui.core.nodes.SceneNode;
 	import gui.errors.AbstractClassError;
 	import gui.events.GuiEvent;
 
+	[Event(name="guiAddedToContext", type="gui.events.GuiEvent")]
 	
+	[Event(name="guiRemovedFromContext", type="gui.events.GuiEvent")]
+	
+	[Event(name="guiAdded", type="gui.events.GuiEvent")]
+	
+	[Event(name="guiRemoved", type="gui.events.GuiEvent")]
+	
+	[Event(name="guiResize", type="gui.events.GuiEvent")]
+	
+	[Event(name="guiMove", type="gui.events.GuiEvent")]
+	
+	[Event(name="guiSkinChange", type="gui.events.GuiEvent")]
 	
 	/**
 	 * Base class for all GuiObjects to inherit from.
 	 */
 	public class GuiObject extends GuiEventDispatcher
 	{
+		use namespace nsGuiInternal;
+		
+		private var _context : GuiContext;
+
+		nsGuiInternal function setContext($guiContext : GuiContext) : void
+		{
+			_context = $guiContext;
+		}
+		
+		nsGuiInternal var _node : SceneNode;
+		
+		nsGuiInternal function get node() : SceneNode
+		{
+			return _node;
+		}
+		
+		
+		
 		protected var changedSize:Boolean;
-				
-		protected var _node:SceneNode;
 		
 		protected var _name:String;
 		protected var _skin:String;
@@ -33,11 +64,8 @@ package gui.core {
 		protected var _visible:Boolean;
 		
 		private var _parent:GuiObjectContainer;
-		
-		public function get node():SceneNode
-		{
-			return _node;
-		}
+
+
 		
 		/**
 		 * Gets the x coordinate.
@@ -55,7 +83,7 @@ package gui.core {
 			if( _x == $x ) return;
 			_x = $x;
 			dispatchEvent( new GuiEvent(GuiEvent.MOVE,this) );
-			if( context ) context.invalidation.onMoved(this);
+			// invalidate..
 		}
 		
 		/**
@@ -74,7 +102,7 @@ package gui.core {
 			if( _y == $y ) return;
 			_y = $y;
 			dispatchEvent( new GuiEvent(GuiEvent.MOVE,this) );
-			if( context ) context.invalidation.onMoved(this);
+			// invalidate..
 		}
 		
 		/**
@@ -94,7 +122,7 @@ package gui.core {
 			_width = $width;
 			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
-			if( context ) context.invalidation.onResized(this);
+			// invalidate..
 		}
 		
 		/**
@@ -114,7 +142,7 @@ package gui.core {
 			_height = $height;
 			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
-			if( context ) context.invalidation.onResized(this);
+			// invalidate..
 		}
 		
 		/**
@@ -149,7 +177,7 @@ package gui.core {
 			if( _skin == $skin ) return;
 			_skin = $skin;
 			dispatchEvent( new GuiEvent(GuiEvent.SKIN_CHANGE,this) );
-			if( context ) context.invalidation.onSkinChanged(this);
+			// invalidate..
 		}
 		
 		/**
@@ -183,15 +211,9 @@ package gui.core {
 			}
 			
 			// TODO Should probably cache the depth property
-			
 			return d;
 		}
 		
-		private var _context:GuiContext;
-		internal function setContext( $guiContext:GuiContext ):void
-		{
-			_context = $guiContext;
-		}
 
 		/**
 		 * Returns the objects current transformation as a matrix.
@@ -221,6 +243,7 @@ package gui.core {
 		public function set visible( $visible:Boolean ):void
 		{
 			_visible = $visible;
+			// invalidate..
 		}
 		
 		/**
@@ -230,7 +253,7 @@ package gui.core {
 		{
 			super(this);
 			
-			if (getQualifiedClassName(this) == "gui.core::GuiObject")
+			if (getQualifiedClassName(this) == "gui.core.objects::GuiObject")
 				throw new AbstractClassError();
 			
 			if( $node == null ) _node = new SceneNode(this);

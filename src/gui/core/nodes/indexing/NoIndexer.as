@@ -1,9 +1,9 @@
-package gui.indexing
+package gui.core.nodes.indexing
 {
-	import flash.utils.Dictionary;
-	import gui.render.GuiRenderRequest;
 	import flash.geom.Rectangle;
-	import gui.core.GuiObject;
+	import flash.utils.Dictionary;
+	import gui.core.objects.GuiObject;
+	import gui.render.GuiRenderRequest;
 	/**
 	* An index that performs no spatial indexing.
 	* But returns GuiObjects with clipping data and gui rects converted
@@ -82,8 +82,8 @@ package gui.indexing
 		}
 	}
 }
-import gui.core.GuiObject;
 import flash.geom.Rectangle;
+import gui.core.objects.GuiObject;
 
 internal class IndexItem
 {

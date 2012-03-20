@@ -1,12 +1,12 @@
-package gui.indexing 
+package gui.core.nodes.indexing 
 {
-	import gui.core.GuiContext;
-	import flash.utils.Dictionary;
-	import gui.render.GuiRenderRequest;
-	import gui.core.GuiObject;
 	import flash.geom.Rectangle;
-	import gui.indexing.qtree.QTreeData;
-	import gui.indexing.qtree.QTreeNode;
+	import flash.utils.Dictionary;
+	import gui.core.context.GuiContextOld;
+	import gui.core.nodes.indexing.qtree.QTreeData;
+	import gui.core.nodes.indexing.qtree.QTreeNode;
+	import gui.core.objects.GuiObject;
+	import gui.render.GuiRenderRequest;
 	/**
 	 * @author jamieowen
 	 */

@@ -1,7 +1,7 @@
 package tests.gui.indexing {
-	import gui.indexing.NoIndexer;
-
+	import gui.core.nodes.indexing.NoIndexer;
 	import tests.helpers.TestGuiObjectContainer;
+
 	
 	/**
 	* Test Description

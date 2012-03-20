@@ -1,4 +1,4 @@
-package gui.core
+package gui.core.objects
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;

@@ -1,11 +1,11 @@
 package gui.renderers.displaylist 
 {
-	import gui.core.GuiObject;
+	import flash.display.Bitmap;
+	import gui.core.objects.GuiObject;
 	import gui.render.GuiRenderRequest;
 	import gui.render.GuiRenderer;
 	import gui.render.IGuiObjectSkin;
 
-	import flash.display.Bitmap;
 
 	/**
 	 * @author jamieowen

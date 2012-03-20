@@ -1,10 +1,10 @@
 package gui.renderers
 {
-	import starling.display.DisplayObject;
-	import gui.render.IGuiObjectSkin;
-	import gui.core.GuiContext;
-	import starling.display.DisplayObjectContainer;
+	import gui.core.context.GuiContext;
 	import gui.render.GuiRenderer;
+	import gui.render.IGuiObjectSkin;
+	import starling.display.DisplayObject;
+	import starling.display.DisplayObjectContainer;
 	/**
 	* Class Description
 	*

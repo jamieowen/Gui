@@ -1,8 +1,7 @@
 package tests.gui.core {
-	import tests.helpers.TestGuiObjectContainer;
+	import gui.core.context.GuiContextOld;
 	import tests.helpers.TestGuiObject;
-	import gui.core.GuiContext;
-	import tests.gui.core.CoreGuiObjectTestBase;
+	import tests.helpers.TestGuiObjectContainer;
 
 	/**
 	 * @author jamieowen
@@ -19,7 +18,7 @@ package tests.gui.core {
 			guiObject = new guiObjectClass();
 			
 			guiObjectContainer = new guiObjectContainerClass();
-			guiContext = new GuiContext(guiObjectContainer);
+			guiContext = new GuiContextOld(guiObjectContainer);
 		}
 		
 		[AfterClass]

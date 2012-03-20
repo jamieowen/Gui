@@ -1,10 +1,10 @@
 package tests.gui.indexing
 {
-	import tests.helpers.TestGuiObjectContainer;
 	import flash.geom.Rectangle;
-	import gui.core.GuiObjectContainer;
-	import gui.indexing.QTree;
+	import gui.core.nodes.indexing.QTree;
+	import gui.core.objects.GuiObjectContainer;
 	import tests.helpers.IndexerTestDataHelper;
+	import tests.helpers.TestGuiObjectContainer;
 	
 	/**
 	* Class Description

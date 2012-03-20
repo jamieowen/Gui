@@ -1,6 +1,8 @@
-package gui.core
+package gui.core.objects
 {
+	import gui.core.context.GuiContext;
 	import flash.utils.getQualifiedClassName;
+	import gui.core.context.nsGuiInternal;
 	import gui.core.nodes.SceneGroupNode;
 	import gui.core.nodes.SceneNode;
 	import gui.errors.AbstractClassError;
@@ -9,9 +11,11 @@ package gui.core
 	
 	public class GuiObjectContainer extends GuiObject
 	{
-		private var _children:Vector.<GuiObject>;
+		use namespace nsGuiInternal;
 		
-		public function get nodeAsGroup():SceneGroupNode
+		private var _children:Vector.<GuiObject>;
+
+		nsGuiInternal function get nodeAsGroup() : SceneGroupNode
 		{
 			return node as SceneGroupNode;
 		}
@@ -31,7 +35,7 @@ package gui.core
 				node.setGuiObject(this);
 			}
 			
-			if (getQualifiedClassName(this) == "gui.core::GuiObjectContainer")
+			if (getQualifiedClassName(this) == "gui.core.objects::GuiObjectContainer")
 				throw new AbstractClassError();
 			
 			_children = new Vector.<GuiObject>();
@@ -60,7 +64,7 @@ package gui.core
 				
 				if( context )
 				{
-					context.invalidation.onAdded( child );
+					// TODO : context.invalidation.onAdded( child );
 					child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
 					if( child is GuiObjectContainer )
 					{
@@ -94,7 +98,7 @@ package gui.core
 				
 				if( context )
 				{
-					context.invalidation.onRemoved( child );
+					// TODO : context.invalidation.onRemoved( child );
 					child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
 					
 					if( child is GuiObjectContainer )
@@ -137,7 +141,7 @@ package gui.core
 			for( var i:int = 0; i<l; i++ )
 			{
 				child = $container.getChildAt(i);
-				context.invalidation.onAdded(child);
+				// TODO : context.invalidation.onAdded(child);
 				if( child is GuiObjectContainer ) callOnAddedOnChildren(child as GuiObjectContainer);
 			}
 		}
@@ -149,7 +153,7 @@ package gui.core
 			for( var i:int = 0; i<l; i++ )
 			{
 				child = $container.getChildAt(i);
-				context.invalidation.onRemoved(child);
+				// TODO : context.invalidation.onRemoved(child);
 				if( child is GuiObjectContainer ) callOnRemovedOnChildren(child as GuiObjectContainer);
 			}
 		}

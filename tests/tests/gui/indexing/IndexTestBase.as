@@ -1,17 +1,17 @@
 package tests.gui.indexing {
-	import gui.core.GuiObject;
-	import gui.core.GuiObjectContainer;
-	import gui.errors.AbstractClassError;
-	import gui.indexing.IGuiIndexer;
-	import gui.render.GuiRenderRequest;
-
-	import tests.helpers.IndexerTestDataHelper;
-	import flash.utils.getQualifiedClassName;
-	
-	import org.flexunit.asserts.assertTrue;
-
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.getQualifiedClassName;
+	import gui.core.nodes.indexing.IGuiIndexer;
+	import gui.core.objects.GuiObject;
+	import gui.core.objects.GuiObjectContainer;
+	import gui.errors.AbstractClassError;
+	import gui.render.GuiRenderRequest;
+	import org.flexunit.asserts.assertTrue;
+	import tests.helpers.IndexerTestDataHelper;
+
+	
+
 	
 	/**
 	* Class Description

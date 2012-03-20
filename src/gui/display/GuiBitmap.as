@@ -1,6 +1,6 @@
 package gui.display
 {
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	
 	public class GuiBitmap extends GuiObject
 	{

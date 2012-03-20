@@ -1,8 +1,7 @@
 package gui.render
 {
 	import flash.geom.Rectangle;
-	import gui.core.GuiContext;
-	import gui.core.GuiObject;
+	import gui.core.objects.GuiObject;
 	
 	
 	/**
