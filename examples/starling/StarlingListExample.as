@@ -34,6 +34,7 @@ package starling
 			list.width = list.height = 200;
 			
 			container.addChild( list );
+			
 		}
 	}
 }
