@@ -20,7 +20,7 @@ package gui.core.managers
 		private var _context:GuiContext;
 		
 		/** All objects in the context implementing an IGestureDelegate interface **/
-		private var _delegates:Vector;
+		private var _delegates:Vector.<IGestureDelegate>;
 		
 		/**
 		* Class Constructor Description
