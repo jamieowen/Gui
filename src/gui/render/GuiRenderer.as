@@ -1,4 +1,5 @@
 package gui.render {
+	import gui.core.traverser.RenderCollector;
 	import gui.events.GuiEvent;
 	import gui.core.context.GuiContext;
 	import flash.events.EventDispatcher;
@@ -21,6 +22,8 @@ package gui.render {
 		
 		private var _context:GuiContext;
 		
+		private var _collector:RenderCollector;
+		
 		private var _skinFactory:SkinFactory;
 		
 		private var _stats:RendererStats;
@@ -28,6 +31,7 @@ package gui.render {
 		private var _skinHold:Vector.<IGuiObjectSkin>;
 		
 		private var _guiToSkinMap:Dictionary;
+	
 		
 		/**
 		 * Returns the current rendered <code>GuiContext</code> instance.
@@ -66,22 +70,30 @@ package gui.render {
 			_skinFactory = $skinFactory == null ? new SkinFactory() : new $skinFactory();
 			
 			_context 	  		= $context;
+			//_context.addEventListener( GuiEvent.CONTEXT_UPDATED, onRender );
 			
-			
+			_collector  	= new RenderCollector(_context.root);
 			
 			_skinHold  		= new Vector.<IGuiObjectSkin>();
 			_guiToSkinMap	= new Dictionary();
 		}
 		
+		/** Render the context when it updates. **/
 		protected function onRender( $event:GuiEvent ):void
 		{
-			
+			// TODO : see about this..
+		}
+		
+		public function render():void
+		{
+			_collector.render();
+			_render( _collector.renderList );
 		}
 		
 		/**
 		 * Generic render implementation - most renderers can use this and override the addSkin() and removeSkin() methods.
 		 */
-		public function render( $queue:Vector.<GuiRenderRequest> ):void
+		protected function _render( $queue:Vector.<GuiRenderRequest> ):void
 		{
 			var i:uint;
 			var l:uint;

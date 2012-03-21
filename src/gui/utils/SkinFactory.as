@@ -151,7 +151,12 @@ package gui.utils
 			var mapping:SkinFactoryMapping;
 			
 			mapping = _matchCache[$pattern];
-			if( mapping != null )return mapping; // return if found in cache
+			if( mapping != null ) 
+			{
+				if( mapping.pattern == "*" )
+					trace( "No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
+				return mapping; // return if found in cache
+			}
 			
 			// list.listItem - matches list.listItem and anything.list.listItem
 			// listItem - matches l
@@ -175,6 +180,7 @@ package gui.utils
 			
 			if( !matched )
 			{
+				trace( "No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
 				return _matchCache["*"]; // return the default if we have it.
 			}else
 			{

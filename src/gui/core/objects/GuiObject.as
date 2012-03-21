@@ -122,7 +122,8 @@ package gui.core.objects
 			_width = $width;
 			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
-			// invalidate..
+			
+			invalidate();
 		}
 		
 		/**
@@ -142,7 +143,8 @@ package gui.core.objects
 			_height = $height;
 			changedSize = true;
 			dispatchEvent( new GuiEvent(GuiEvent.RESIZE,this) );
-			// invalidate..
+			
+			invalidate();
 		}
 		
 		/**
@@ -177,7 +179,8 @@ package gui.core.objects
 			if( _skin == $skin ) return;
 			_skin = $skin;
 			dispatchEvent( new GuiEvent(GuiEvent.SKIN_CHANGE,this) );
-			// invalidate..
+			
+			invalidate();
 		}
 		
 		/**
@@ -265,6 +268,8 @@ package gui.core.objects
 			_visible = true;
 			
 			changedSize = false;
+			
+			// TODO - CreateChildren method
 		}
 		
 		/** Update the objects internals**/

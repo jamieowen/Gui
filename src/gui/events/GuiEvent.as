@@ -15,6 +15,9 @@ package gui.events
 		public static const SCROLL:String						= "guiScroll";
 		public static const SKIN_CHANGE:String					= "guiSkinChange";
 		
+		/** Notifies renderers to update **/
+		public static const CONTEXT_UPDATED:String				= "guiContextUpdated";
+		
 		public var guiObject:GuiObject;
 		
 		public function GuiEvent($type:String, $guiObject:GuiObject)

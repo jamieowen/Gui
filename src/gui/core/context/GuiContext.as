@@ -1,9 +1,13 @@
 package gui.core.context
 {
+	import gui.events.GuiEvent;
 	import gui.core.objects.GuiEventDispatcher;
 	import gui.core.managers.GestureManager;
 	import gui.errors.GuiArgumentError;
 	import gui.core.objects.GuiObjectContainer;
+	
+	[Event(name="guiContextUpdated", type="gui.events.GuiEvent")]
+	
 	/**
 	* Class Description
 	*
@@ -16,6 +20,7 @@ package gui.core.context
 		private var _root:GuiObjectContainer;
 		
 		private var _gestures:GestureManager;
+		
 		
 		/** Returns the root container **/
 		public function get root():GuiObjectContainer
@@ -53,6 +58,9 @@ package gui.core.context
 			_gestures.update();
 			
 			// invalidation.
+			
+			// dispatch update event.
+			// dispatchEvent( new GuiEvent(GuiEvent.CONTEXT_UPDATED, null) );
 		}
 		
 		public function dispose():void

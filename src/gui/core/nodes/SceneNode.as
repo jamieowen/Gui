@@ -70,8 +70,6 @@ package gui.core.nodes {
 		/** Called before a render process to update invalid objects **/
 		public function update():void
 		{
-			//trace( "node : " + _guiObject.depth );
-			
 			if( _invalid )
 			{
 				_invalid = false;
@@ -83,7 +81,7 @@ package gui.core.nodes {
 		/** Invalidates the gui object in some way**/
 		public function invalidate():void
 		{
-			_invalid = true;
+			_invalid = true; 
 		}
 		
 		/** Seperate set function for guiObject as objects should only be set initially.**/
