@@ -50,7 +50,7 @@ package gui.core.context
 			else if( $guiRoot is GuiObject ) _root = $guiRoot;
 			else throw new ArgumentError("Root cannot be null.");
 			
-			_root.setContext(this);
+			//_root.setContext(this);
 			
 			_indexer = ( $indexer == null ) ? new NoIndexer():$indexer;
 			

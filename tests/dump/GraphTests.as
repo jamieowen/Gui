@@ -1,4 +1,5 @@
 package dump {
+	import gui.core.context.GuiContext;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -52,7 +53,7 @@ package dump {
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
 			var bitmapClip:BitmapData = new BitmapData(100, 100,true,0x99000000);
 			
-			display 	= new DisplayListRenderer(new GuiContextOld(GuiContainer), this);
+			display 	= new DisplayListRenderer(new GuiContext(GuiContainer), this);
 			
 			display.skins.register("*", DisplayListGuiBitmap, {bitmapData:bitmap});
 			display.skins.register("square", DisplayListGuiBitmap, {bitmapData:bitmap});

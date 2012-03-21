@@ -1,4 +1,5 @@
 package tests.gui.renderers {
+	import gui.core.context.GuiContext;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.TimerEvent;
@@ -27,7 +28,7 @@ package tests.gui.renderers {
 	public class DisplayListRendererTest 
 	{
 		public static var contextRoot:GuiContainer;
-		public static var context:GuiContextOld;
+		public static var context:GuiContext;
 		public static var renderer:DisplayListRenderer;
 		
 		// THE TESTING FUNCTIONS CAN REALLY BE MOVED TO A BASE CLASS - AS WE DID WITH INDEXER TESTS.
@@ -45,7 +46,7 @@ package tests.gui.renderers {
 			contextRoot = new GuiContainer();
 			contextRoot.name = "contextRoot";
 			
-			context  	= new GuiContextOld(contextRoot);
+			context  	= new GuiContext(contextRoot);
 			renderer 	= new DisplayListRenderer(context, sprite);
 			
 			var bitmap:BitmapData = new BitmapData(100, 100,true,0x55FF0000);
@@ -115,7 +116,7 @@ package tests.gui.renderers {
 		{
 			// navigates to a leaf node and removes the container.
 			
-			var contextRef:GuiContextOld = context;
+			var contextRef:GuiContext = context;
 			var rendererRef:GuiRenderer = renderer;
 			
 			var removeContainer:Function = function($container:GuiObjectContainer, $timer:Timer):void

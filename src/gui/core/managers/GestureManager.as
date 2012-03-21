@@ -36,7 +36,6 @@ package gui.core.managers
 			_context.root.addEventListener(GuiEvent.REMOVED_FROM_CONTEXT, onContextEvent );
 			
 			// add default gestures.
-			
 			addGesture( new TapGesture() );
 		}
 		
@@ -61,7 +60,6 @@ package gui.core.managers
 			{
 				for( var i:int = 0; i<_gestures.length; i++ )
 					_gestures[i].delegateAdded($object as IGestureDelegate);
-				
 			}
 		}
 		
@@ -74,21 +72,28 @@ package gui.core.managers
 			}
 		}
 		
+		/** Updates the Gestures each frame **/
+		public function update():void
+		{
+			for( var i:int = 0; i<_gestures.length; i++ )
+				_gestures[i].update();		
+		}
+		
 		// --------------
 		// Input
 		
 		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
-		nsGuiInternal function inputDown():void
+		nsGuiInternal function inputDown($x : Number, $y : Number):void
 		{
 			for( var i:int = 0; i<_gestures.length; i++ )
-				_gestures[i].inputDown();
+				_gestures[i].inputDown($x,$y);
 		}
 		
 		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
-		nsGuiInternal function inputUp():void
+		nsGuiInternal function inputUp($x : Number, $y : Number):void
 		{
 			for( var i:int = 0; i<_gestures.length; i++ )
-				_gestures[i].inputUp();			
+				_gestures[i].inputUp($x,$y);			
 		}
 		
 		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
@@ -98,7 +103,6 @@ package gui.core.managers
 				_gestures[i].inputMove($x,$y);
 		}
 
-		
 		// --------------
 		// Event Handlers
 		
