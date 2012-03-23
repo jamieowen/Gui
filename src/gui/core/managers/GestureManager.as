@@ -1,13 +1,13 @@
 package gui.core.managers
 {
-	import gui.core.gestures.SwipeGesture;
+	import gui.core.gestures.SwipeProcessor;
 	import gui.core.gestures.IGestureProcessor;
 	import gui.core.context.nsGuiInternal;
 	import gui.core.gestures.IGestureDelegate;
 	import gui.core.objects.GuiObject;
 	import gui.events.GuiEvent;
 	import gui.core.context.GuiContext;
-	import gui.core.gestures.TapGesture;
+	import gui.core.gestures.TapProcessor;
 	/**
 	* Class Description
 	*
@@ -36,9 +36,10 @@ package gui.core.managers
 			_context.root.addEventListener(GuiEvent.ADDED_TO_CONTEXT, onContextEvent );
 			_context.root.addEventListener(GuiEvent.REMOVED_FROM_CONTEXT, onContextEvent );
 			
+			// TODO add and remove gesture processors as and when objects appear that use them
 			// add default gestures.
-			addGesture( new TapGesture() );
-			addGesture( new SwipeGesture() );
+			addGesture( new TapProcessor() );
+			addGesture( new SwipeProcessor() );
 		}
 		
 		public function dispose():void

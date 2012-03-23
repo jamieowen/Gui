@@ -1,5 +1,5 @@
 package gui.display {
-	import gui.gestures.ISwipeGesture;
+	import gui.gestures.ISwipeLeftRight;
 	import gui.core.objects.GuiObject;
 	import gui.core.IScrollable;
 	import gui.core.objects.GuiObjectContainer;
@@ -9,7 +9,7 @@ package gui.display {
 	/**
 	 * @author jamieowen
 	 */
-	public class GuiList extends GuiObjectContainer implements IScrollable, ISwipeGesture
+	public class GuiList extends GuiObjectContainer implements IScrollable
 	{
 		/** If the data provider has changed **/		
 		protected var changedData:Boolean;

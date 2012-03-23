@@ -2,29 +2,29 @@ package gui.core.gestures
 {
 	import flash.geom.Rectangle;
 	import gui.core.objects.GuiObject;
-	import gui.gestures.ITapGesture;
+	import gui.gestures.ITap;
 	/**
 	* Class Description
 	*
 	* @author jamieowen
 	*/
-	public class TapGesture implements IGestureProcessor
+	public class TapProcessor implements IGestureProcessor
 	{
 		/** Holds the specific delegates that this gesture operates on.**/
-		private var _delegates:Vector.<ITapGesture>;
+		private var _delegates:Vector.<ITap>;
 		
 		/**
 		* Class Constructor Description
 		*/
-		public function TapGesture()
+		public function TapProcessor()
 		{
-			_delegates = new Vector.<ITapGesture>();
+			_delegates = new Vector.<ITap>();
 		}
 
 		/** When a delegate is added to the context - check if this can receive tap events **/
 		public function delegateAdded($delegate : IGestureDelegate) : void
 		{
-			if( $delegate is ITapGesture )
+			if( $delegate is ITap )
 			{
 				_delegates.push( $delegate );
 			}
@@ -33,7 +33,7 @@ package gui.core.gestures
 		/** Removes the delegate from processing **/
 		public function delegateRemoved( $delegate:IGestureDelegate ):void
 		{
-			if( $delegate is ITapGesture )
+			if( $delegate is ITap )
 			{
 				var idx:int = _delegates.indexOf($delegate);
 				if( idx != -1 )
@@ -61,7 +61,7 @@ package gui.core.gestures
 		{
 			if( _delegates.length )
 			{	
-				var del:ITapGesture;
+				var del:ITap;
 				var rect:Rectangle;	
 				for( var i:uint = 0; i<_delegates.length; i++ )
 				{

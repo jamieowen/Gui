@@ -1,6 +1,6 @@
 package gui.display {
 	import gui.events.GuiEvent;
-	import gui.gestures.ITapGesture;
+	import gui.gestures.ITap;
 	import gui.core.objects.GuiObject;
 
 	[Event(name="guiClick", type="gui.events.GuiEvent")]
@@ -8,7 +8,7 @@ package gui.display {
 	/**
 	 * @author jamieowen
 	 */
-	public class GuiButton extends GuiObject implements ITapGesture
+	public class GuiButton extends GuiObject implements ITap
 	{
 		public function GuiButton()
 		{

@@ -1,9 +1,10 @@
 package gui.core.gestures
 {
+	import gui.gestures.ISwipeUpDown;
 	import flash.geom.Vector3D;
 	import gui.core.objects.GuiObject;
 	import flash.geom.Rectangle;
-	import gui.gestures.ISwipeGesture;
+	import gui.gestures.ISwipeLeftRight;
 	import gui.core.gestures.IGestureDelegate;
 
 	/**
@@ -14,19 +15,19 @@ package gui.core.gestures
 	 * Swipes can be either up, down, left or right.
 	 * A single swipe gesture can trigger more than one swipe during the interaction.
 	 * E.g. If the user moves from left to right, a swipe right is triggered. If the user keeps the finger
-	 * held down and moves back from right to left a swipe left is triggered.  This can be repeated.
+	 * held down and moves back from right to left a swipe left is triggered.  This can be repeated and in the up/down direction.
 	 * 
 	 * Unlike the PhysicsSwipe, the Swipe does not provide any physics information to the Delegate.
 	 * 
 	 * @author jamieowen
 	 */
-	public class SwipeGesture implements IGestureProcessor
+	public class SwipeProcessor implements IGestureProcessor
 	{
 		/** Holds the specific delegates that this gesture operates on.**/
-		private var _delegates:Vector.<ISwipeGesture>;
+		private var _delegates:Vector.<ISwipeLeftRight>;
 		
 		/** Current objects effected by current swipe **/
-		private var _processing:Vector.<ISwipeGesture>;
+		private var _processing:Vector.<ISwipeLeftRight>;
 		
 		/** Whether we are processing a swipe**/
 		private var _process:Boolean;
@@ -37,11 +38,6 @@ package gui.core.gestures
 		/** The directional for each position **/
 		private var _directions:Vector.<Vector3D>;
 		
-		/** The minimum amount of information before we can calculate a direction **/
-		private var _bufferMinBeforeCalc:uint;
-		
-		/** The current number of items added to the buffer since input started **/
-		private var _bufferCount:uint;
 		
 		/** left right switch ( 0=not triggered, 1=left, 2=right ) **/
 		private var _leftRightSwitch:uint;
@@ -53,12 +49,10 @@ package gui.core.gestures
 		/**
 		* Class Constructor Description
 		*/
-		public function SwipeGesture()
+		public function SwipeProcessor()
 		{
-			_delegates = new Vector.<ISwipeGesture>();
-			_processing = new Vector.<ISwipeGesture>();
-			
-			_bufferMinBeforeCalc = 5;
+			_delegates = new Vector.<ISwipeLeftRight>();
+			_processing = new Vector.<ISwipeLeftRight>();
 			
 			var buffer:uint = 5;
 			_positions = new Vector.<Vector3D>(buffer);
@@ -74,7 +68,7 @@ package gui.core.gestures
 		/** When a delegate is added to the context - check if this can receive tap events **/
 		public function delegateAdded($delegate : IGestureDelegate) : void
 		{
-			if( $delegate is ISwipeGesture )
+			if( $delegate is ISwipeLeftRight || $delegate is ISwipeUpDown )
 			{
 				_delegates.push( $delegate );
 			}
@@ -83,7 +77,7 @@ package gui.core.gestures
 		/** Removes the delegate from processing **/
 		public function delegateRemoved( $delegate:IGestureDelegate ):void
 		{
-			if( $delegate is ISwipeGesture )
+			if( $delegate is ISwipeLeftRight || $delegate is ISwipeUpDown )
 			{
 				var idx:int = _delegates.indexOf($delegate);
 				if( idx != -1 )
@@ -139,24 +133,38 @@ package gui.core.gestures
 				pushPosition( $x, $y );
 				var dir:uint = getDirection();
 				
-				if( dir == 0 ){ // static
-					trace( "static" );
+				// check the direction each time the mouse moves.
+				// once a direction is triggered switch it on so it is triggered once
+				
+				var i:uint;
+				var count:uint 	= _delegates.length;
+				
+				if( dir == 0 ){ // none, do nothing
+					
 				}else
 				if( dir == 1 && (_leftRightSwitch == 0 || _leftRightSwitch == 2) ){ // left
 					_leftRightSwitch = 1;
-					trace( "left" );
+					for( i = 0; i<count; i++ ) 
+						if( _delegates[i] is ISwipeLeftRight )
+							(_delegates[i] as ISwipeLeftRight ).onSwipeLeft();
 				}else
 				if( dir == 2 && (_leftRightSwitch == 0 || _leftRightSwitch == 1) ){ // right
 					_leftRightSwitch = 2;
-					trace( "right" );
+					for( i = 0; i<count; i++ ) 
+						if( _delegates[i] is ISwipeLeftRight )
+							(_delegates[i] as ISwipeLeftRight ).onSwipeRight();
 				}else
 				if( dir == 3 && (_upDownSwitch == 0 || _upDownSwitch == 2) ){ // up
 					_upDownSwitch = 1;
-					trace( "up" );
+					for( i = 0; i<count; i++ )
+						if( _delegates[i] is ISwipeUpDown )
+							(_delegates[i] as ISwipeUpDown ).onSwipeUp();
 				}else
 				if( dir == 4 && (_upDownSwitch == 0 || _upDownSwitch == 1) ){ // down
 					_upDownSwitch = 2;
-					trace( "down" );
+					for( i = 0; i<count; i++ )
+						if( _delegates[i] is ISwipeUpDown )
+							(_delegates[i] as ISwipeUpDown ).onSwipeDown();
 				}
 			}	
 		}
@@ -164,8 +172,6 @@ package gui.core.gestures
 		/** Pushes a new position to the buffer and calculates direction **/
 		private function pushPosition( $x:Number,$y:Number ):void
 		{
-			_bufferCount++;
-			
 			// shift the first item and push it to the front.
 			var buffer:uint 	= _positions.length;
 			var p:Vector3D 		= _positions[0];
@@ -194,39 +200,49 @@ package gui.core.gestures
 				_positions[i].setTo(0,0,0);
 				_directions[i].setTo(0,0,0);
 			}
-			
-			_bufferCount = 0;
 		}
 		
 		/** gets the average direction ( 0=none, 1=left, 2=right, 3=up, 4=down ) **/
 		private function getDirection():uint
 		{
-			if( _bufferCount < _bufferMinBeforeCalc )
-				return 0;
-			
 			var buffer:uint = _directions.length;
-			var av:Vector3D = new Vector3D();
+			var d:Vector3D;
 			
-			for( var i:uint = 0; i<buffer; i++ ){
-				av = av.add(_directions[i]);
+			var prev:int = -1;
+			var res:int;
+			
+			// check all directions in the buffer - if they all match up then we are good for that direction..
+			for( var i:uint = 0; i<buffer; i++ )
+			{
+				d = _directions[i];
+				
+				if( Math.abs(d.x) > Math.abs(d.y) ){
+					if( d.x < 0 )
+						res = 1;
+					else
+					if( d.x > 0 )
+						res = 2;
+					else
+						res = 0;
+				}else
+				if( d.y < 0 ){
+					res = 3;
+				}else
+				if( d.y > 0 ){
+					res = 4;
+				}else
+					res = 0;
+				
+				if( prev == -1 )
+					prev = res;
+					
+				if( prev != res )
+					return 0; // we are not ok return 0
+				
+				prev = res;
 			}
 			
-			if( Math.abs(av.x) > Math.abs(av.y) ){
-				if( av.x < 0 )
-					return 1;
-				else
-				if( av.x > 0 )
-					return 2;
-				else
-					return 0;
-			}else
-			if( av.y < 0 ){
-				return 3;
-			}else
-			if( av.y > 0 ){
-				return 4;
-			}else
-				return 0;
+			return res;
 		}
 	}
 }
