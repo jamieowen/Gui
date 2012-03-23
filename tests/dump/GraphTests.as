@@ -73,7 +73,8 @@ package dump {
 			renderer.render();
 			time = getTimer()-time;
 			//trace( "Render time : " + (time/1000) );
-			display.render( renderer.renderList );
+			
+			// TODO display.render( renderer.renderList );
 			
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}

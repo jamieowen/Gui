@@ -58,9 +58,7 @@ package gui.core.nodes
 				var l:uint = _children.length;
 				while( i<l )
 					_children[i++].collect(renderer);
-				
-				//trace( "collect: " + guiObject + " " + guiObject.getBounds() + " " + l );
-				
+
 				renderer.popMatrix();
 				
 				if( clipChildren ) renderer.popClipRect();

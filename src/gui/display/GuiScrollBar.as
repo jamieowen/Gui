@@ -44,6 +44,7 @@ package gui.display
 			addChild( scrollBackground );
 			addChild( scrollBar );
 			
+			scrollBackground.name = "scroller";
 			changedSize = true;
 			invalidate();
 			
@@ -58,7 +59,7 @@ package gui.display
 				
 				scrollBackground.width  = width;
 				scrollBackground.height = height; 
-				
+				trace( "[GuiScrollBar] bg : " + scrollBackground.width + " " + scrollBackground.height );
 				if( _scrollDirection == GuiScrollDirection.VERTICAL )
 				{
 					scrollBar.height = height/2;
@@ -69,6 +70,9 @@ package gui.display
 					scrollBar.height = height;
 					scrollBar.width  = width/2;
 				}
+				
+				//scrollBar.y = 30;
+				//scrollBackground.x = 0;
 				
 			}
 		}

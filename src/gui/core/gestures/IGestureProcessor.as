@@ -3,7 +3,7 @@ package gui.core.gestures
 	/**
 	 * @author jamieowen
 	 */
-	public interface IGesture
+	public interface IGestureProcessor
 	{
 		/** Called by the manager to notify the Gesture a gesture delegate has been added to the context **/
 		function delegateAdded($delegate : IGestureDelegate) : void;
@@ -22,5 +22,8 @@ package gui.core.gestures
 		
 		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
 		function inputMove($x:Number, $y:Number):void;
+		
+		/** disposes of the gesture **/
+		function dispose():void;
 	}
 }

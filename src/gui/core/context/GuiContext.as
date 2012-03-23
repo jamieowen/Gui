@@ -65,7 +65,24 @@ package gui.core.context
 		
 		public function dispose():void
 		{
-			
+			_gestures.dispose();
+		}
+		
+		nsGuiInternal function inputDown($x : Number, $y : Number):void
+		{
+			_gestures.inputDown($x, $y);
+		}
+		
+		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
+		nsGuiInternal function inputUp($x : Number, $y : Number):void
+		{
+			_gestures.inputUp($x, $y);	
+		}
+		
+		/** allows the gesture to act on user input.  this can be touch, mouse, gesture events, etc. **/
+		nsGuiInternal function inputMove($x : Number, $y : Number) : void
+		{
+			_gestures.inputMove($x,$y);
 		}
 
 		

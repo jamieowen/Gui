@@ -79,7 +79,7 @@ package starling.base {
 		protected function onEnterFrame( $event:flash.events.Event ):void
 		{
 			collector.render();
-			renderer.render( collector.renderList );
+			// TODO renderer.render( collector.renderList );
 		}
 		
 		protected function onStarlingEvent( $event:starling.events.Event ):void

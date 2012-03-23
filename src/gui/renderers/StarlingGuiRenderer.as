@@ -1,5 +1,9 @@
 package gui.renderers
 {
+	import starling.events.TouchPhase;
+	import starling.events.Touch;
+	import gui.core.context.nsGuiInternal;
+	import starling.events.TouchEvent;
 	import gui.core.context.GuiContext;
 	import gui.render.GuiRenderer;
 	import gui.render.IGuiObjectSkin;
@@ -12,6 +16,8 @@ package gui.renderers
 	*/
 	public class StarlingGuiRenderer extends GuiRenderer
 	{
+		use namespace nsGuiInternal;
+		
 		/** The starling container **/
 		private var _container:DisplayObjectContainer;
 		
@@ -23,6 +29,36 @@ package gui.renderers
 			super($context);
 			
 			_container = $container;
+			
+			// map events to the context..
+			_container.touchable = true;
+			_container.stage.addEventListener(TouchEvent.TOUCH, onTouchEvent );
+		}
+		
+		private function onTouchEvent( $event:TouchEvent ):void
+		{
+			var touch:Touch;
+			for( var i:uint = 0; i<$event.touches.length; i++ )
+			{
+				touch = $event.touches[i];
+				
+				// TODO : Renderer needs to offset positions by the renderer's target object container's position.  i.e. the viewport offset
+				
+				switch( touch.phase )
+				{ 
+					case TouchPhase.BEGAN :
+						context.inputDown( touch.globalX, touch.globalY );
+						break;
+						
+					case TouchPhase.ENDED :
+						context.inputUp( touch.globalX, touch.globalY );
+						break;
+					
+					case TouchPhase.MOVED :
+						context.inputMove( touch.globalX, touch.globalY );
+						break;
+				}
+			}
 		}
 		
 		/** Returns the number of skins rendererd **/

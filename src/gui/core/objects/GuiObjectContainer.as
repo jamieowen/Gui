@@ -57,19 +57,19 @@ package gui.core.objects
 				
 				child.setParent(this);
 				
-				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child) );
-				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer );
+				child.dispatchEvent( new GuiEvent(GuiEvent.ADDED,child,true) );
+				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.ADDED, child as GuiObjectContainer,true );
 				
 				( node as SceneGroupNode ).add(child.node);
 				
 				if( context )
 				{
 					// TODO : context.invalidation.onAdded( child );
-					child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child) );
+					child.dispatchEvent( new GuiEvent(GuiEvent.ADDED_TO_CONTEXT,child,true) );
 					if( child is GuiObjectContainer )
 					{
 						callOnAddedOnChildren(child as GuiObjectContainer);
-						dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer );
+						dispatchEventOnChildren( GuiEvent.ADDED_TO_CONTEXT, child as GuiObjectContainer,true );
 					}
 				}
 			}
@@ -91,20 +91,20 @@ package gui.core.objects
 			{
 				var child:GuiObject = _children[index];
 				
-				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child) );
-				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer );
+				child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED,child,true) );
+				if( child is GuiObjectContainer ) dispatchEventOnChildren( GuiEvent.REMOVED, child as GuiObjectContainer,true );
 				
 				( node as SceneGroupNode ).remove(child.node);
 				
 				if( context )
 				{
 					// TODO : context.invalidation.onRemoved( child );
-					child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child) );
+					child.dispatchEvent( new GuiEvent(GuiEvent.REMOVED_FROM_CONTEXT,child,true) );
 					
 					if( child is GuiObjectContainer )
 					{
 						callOnRemovedOnChildren(child as GuiObjectContainer);
-						dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer );
+						dispatchEventOnChildren( GuiEvent.REMOVED_FROM_CONTEXT, child as GuiObjectContainer, true );
 					}
 				}
 					
@@ -118,7 +118,7 @@ package gui.core.objects
 			}
 		}
 		
-		protected function dispatchEventOnChildren( $type:String, $container:GuiObjectContainer ):void
+		protected function dispatchEventOnChildren( $type:String, $container:GuiObjectContainer, $bubbles:Boolean = false ):void
 		{
 			var i:int = 0;
 			var l:int = $container.numChildren;
@@ -129,7 +129,7 @@ package gui.core.objects
 			while( i<l )
 			{
 				child = $container.getChildAt(i++);
-				child.dispatchEvent(new GuiEvent($type,child));
+				child.dispatchEvent(new GuiEvent($type,child,$bubbles));
 				if( child is GuiObjectContainer ) dispatchEventOnChildren( $type,child as GuiObjectContainer );
 			}
 		}

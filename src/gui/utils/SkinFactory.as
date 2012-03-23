@@ -154,7 +154,7 @@ package gui.utils
 			if( mapping != null ) 
 			{
 				if( mapping.pattern == "*" )
-					trace( "No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
+					trace( "[SkinFactory] No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
 				return mapping; // return if found in cache
 			}
 			
@@ -180,7 +180,7 @@ package gui.utils
 			
 			if( !matched )
 			{
-				trace( "No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
+				trace( "[SkinFactory] No skin found for pattern : " + $pattern + ". Default skin ('*') used instead." );
 				return _matchCache["*"]; // return the default if we have it.
 			}else
 			{

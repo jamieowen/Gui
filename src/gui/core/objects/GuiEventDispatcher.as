@@ -1,5 +1,7 @@
 package gui.core.objects
 {
+	import gui.core.context.nsGuiInternal;
+	import gui.events.GuiEvent;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.events.EventDispatcher;
@@ -11,6 +13,7 @@ package gui.core.objects
 	*/
 	public class GuiEventDispatcher extends EventDispatcher
 	{
+		use namespace nsGuiInternal;
 		/**
 		* Class Constructor Description
 		*/
@@ -23,7 +26,13 @@ package gui.core.objects
 		{
 			if( $event.bubbles )
 			{
-				// TODO : simple bubbling impl for now. - not handling any preventDefault(), etc.
+				// TODO : simple/ugly bubbling impl for now. - not handling any preventDefault(), etc - Not sure if Signals may be better
+				
+				( $event as GuiEvent ).setBubbleTarget( this ); // set the target at the bubble target only. ( setBubbleTarget can only be called once )
+				
+				if( $event.type == GuiEvent.ADDED_TO_CONTEXT ) trace( this + "[Bubble] added to context : " + $event.target );
+				
+				 
 				var res:Boolean = super.dispatchEvent( $event );
 				if( this.hasOwnProperty("parent") && this["parent"] is IEventDispatcher )
 					res = ( this["parent"] as IEventDispatcher ).dispatchEvent( $event );

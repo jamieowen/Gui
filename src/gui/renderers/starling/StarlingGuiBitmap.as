@@ -27,8 +27,7 @@ package gui.renderers.starling
 			
 			var item:GuiRenderRequest = $request;
 			
-			//trace( "Render : " + item.guiRect  );
-			
+			// TODO : Invalidation for checking size of object changing - this should not make a call to this.readjustSize()
 			this.x 		= item.guiRect.x;
 			this.y 		= item.guiRect.y;
 			this.width 	= item.guiRect.width;

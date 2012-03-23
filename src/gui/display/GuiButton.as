@@ -1,7 +1,10 @@
 package gui.display {
+	import gui.events.GuiEvent;
 	import gui.gestures.ITapGesture;
 	import gui.core.objects.GuiObject;
 
+	[Event(name="guiClick", type="gui.events.GuiEvent")]
+	
 	/**
 	 * @author jamieowen
 	 */
@@ -16,7 +19,7 @@ package gui.display {
 		
 		public function onTap():void
 		{
-			trace( "onTap!" );
+			dispatchEvent( new GuiEvent(GuiEvent.CLICK, this) );
 		}
 	}
 }

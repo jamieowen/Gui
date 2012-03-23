@@ -1,6 +1,7 @@
 package gui.core.managers
 {
-	import gui.core.gestures.IGesture;
+	import gui.core.gestures.SwipeGesture;
+	import gui.core.gestures.IGestureProcessor;
 	import gui.core.context.nsGuiInternal;
 	import gui.core.gestures.IGestureDelegate;
 	import gui.core.objects.GuiObject;
@@ -15,7 +16,7 @@ package gui.core.managers
 	public class GestureManager
 	{
 		/** Gesture Delegators **/
-		private var _gestures:Vector.<IGesture>;
+		private var _gestures:Vector.<IGestureProcessor>;
 		
 		private var _context:GuiContext;
 		
@@ -28,7 +29,7 @@ package gui.core.managers
 		public function GestureManager($context:GuiContext) 
 		{
 			_context = $context;
-			_gestures = new Vector.<IGesture>();
+			_gestures = new Vector.<IGestureProcessor>();
 			_delegates = new Vector.<IGestureDelegate>();
 			
 			// listen for objects added to context root
@@ -37,27 +38,42 @@ package gui.core.managers
 			
 			// add default gestures.
 			addGesture( new TapGesture() );
+			addGesture( new SwipeGesture() );
+		}
+		
+		public function dispose():void
+		{
+			for( var i:int = 0; i<_gestures.length; i++ )
+				_gestures[i].dispose();	
+				
+			_gestures.splice(0, uint.MAX_VALUE);
 		}
 		
 		/** Adds a gesture to process gui objects **/
-		public function addGesture( $gesture:IGesture ):void
+		public function addGesture( $gesture:IGestureProcessor ):void
 		{
 			if( _gestures.indexOf( $gesture ) == -1 )
 				_gestures.push( $gesture );
 		}
 		
 		/** Removes an active gesture **/
-		public function removeGesture( $gesture:IGesture ):void
+		public function removeGesture( $gesture:IGestureProcessor ):void
 		{
 			var idx:int = _gestures.indexOf($gesture);
 			if( idx >= 0 )
+			{
 				_gestures.splice(idx, 1);
+				$gesture.dispose();
+			}
 		}
 		
 		private function addObject( $object:GuiObject ):void
 		{
+			// needs to add existing delegates - or traverse the context
 			if( $object is IGestureDelegate )
 			{
+				_delegates.push( $object );
+				
 				for( var i:int = 0; i<_gestures.length; i++ )
 					_gestures[i].delegateAdded($object as IGestureDelegate);
 			}
@@ -67,6 +83,8 @@ package gui.core.managers
 		{
 			if( $object is IGestureDelegate )
 			{
+				_delegates.splice( _delegates.indexOf($object), 1 );
+				
 				for( var i:int = 0; i<_gestures.length; i++ )
 					_gestures[i].delegateRemoved($object as IGestureDelegate);
 			}
