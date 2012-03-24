@@ -69,7 +69,7 @@ package gui.core.gestures
 					rect = ( del as GuiObject ).getGlobalBounds();
 					
 					if( rect.contains($x, $y) )
-						del.onTap();
+						del.gesture_tap_onTap();
 				}
 			}
 		}

@@ -17,8 +17,6 @@ package gui.core.gestures
 	 * E.g. If the user moves from left to right, a swipe right is triggered. If the user keeps the finger
 	 * held down and moves back from right to left a swipe left is triggered.  This can be repeated and in the up/down direction.
 	 * 
-	 * Unlike the PhysicsSwipe, the Swipe does not provide any physics information to the Delegate.
-	 * 
 	 * @author jamieowen
 	 */
 	public class SwipeProcessor implements IGestureProcessor
@@ -82,6 +80,10 @@ package gui.core.gestures
 				var idx:int = _delegates.indexOf($delegate);
 				if( idx != -1 )
 					_delegates.splice(idx,1);
+					
+				idx = _processing.indexOf($delegate);
+				if( idx != -1 )
+					_processing.splice(idx,1);
 			}
 		}
 		
@@ -146,25 +148,25 @@ package gui.core.gestures
 					_leftRightSwitch = 1;
 					for( i = 0; i<count; i++ ) 
 						if( _delegates[i] is ISwipeLeftRight )
-							(_delegates[i] as ISwipeLeftRight ).onSwipeLeft();
+							(_delegates[i] as ISwipeLeftRight ).gesture_swipe_onSwipeLeft();
 				}else
 				if( dir == 2 && (_leftRightSwitch == 0 || _leftRightSwitch == 1) ){ // right
 					_leftRightSwitch = 2;
 					for( i = 0; i<count; i++ ) 
 						if( _delegates[i] is ISwipeLeftRight )
-							(_delegates[i] as ISwipeLeftRight ).onSwipeRight();
+							(_delegates[i] as ISwipeLeftRight ).gesture_swipe_onSwipeRight();
 				}else
 				if( dir == 3 && (_upDownSwitch == 0 || _upDownSwitch == 2) ){ // up
 					_upDownSwitch = 1;
 					for( i = 0; i<count; i++ )
 						if( _delegates[i] is ISwipeUpDown )
-							(_delegates[i] as ISwipeUpDown ).onSwipeUp();
+							(_delegates[i] as ISwipeUpDown ).gesture_swipe_onSwipeUp();
 				}else
 				if( dir == 4 && (_upDownSwitch == 0 || _upDownSwitch == 1) ){ // down
 					_upDownSwitch = 2;
 					for( i = 0; i<count; i++ )
 						if( _delegates[i] is ISwipeUpDown )
-							(_delegates[i] as ISwipeUpDown ).onSwipeDown();
+							(_delegates[i] as ISwipeUpDown ).gesture_swipe_onSwipeDown();
 				}
 			}	
 		}

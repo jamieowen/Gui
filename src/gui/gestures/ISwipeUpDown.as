@@ -7,7 +7,7 @@ package gui.gestures
 	 */
 	public interface ISwipeUpDown extends IGestureDelegate
 	{
-		function onSwipeUp():void;
-		function onSwipeDown():void;
+		function gesture_swipe_onSwipeUp():void;
+		function gesture_swipe_onSwipeDown():void;
 	}
 }

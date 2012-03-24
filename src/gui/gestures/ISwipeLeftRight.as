@@ -7,7 +7,7 @@ package gui.gestures
 	 */
 	public interface ISwipeLeftRight extends IGestureDelegate
 	{
-		function onSwipeLeft():void;
-		function onSwipeRight():void;
+		function gesture_swipe_onSwipeLeft():void;
+		function gesture_swipe_onSwipeRight():void;
 	}
 }

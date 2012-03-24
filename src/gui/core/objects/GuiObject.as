@@ -49,13 +49,13 @@ package gui.core.objects
 		
 		protected var changedSize:Boolean;
 		
-		protected var _name:String;
-		protected var _skin:String;
+		private var _name:String;
+		private var _skin:String;
 		
-		protected var _x:Number;
-		protected var _y:Number;
-		protected var _width:Number;
-		protected var _height:Number;
+		private var _x:Number;
+		private var _y:Number;
+		private var _width:Number;
+		private var _height:Number;
 		
 		//private var _rotation:Number; // implement later
 		//private var _scaleX:Number;

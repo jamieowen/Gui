@@ -49,7 +49,7 @@ package gui.display
 			var m:Matrix = new Matrix();
 			//if( _scaleX != 0.0 || _scaleY != 0.0 ) m.scale(_scaleX,_scaleY);
 			//if( _rotation != 0.0 ) m.rotate(_rotation);
-			if( _x != 0.0 || _y != 0.0 ) m.translate(_x,_y);
+			if( x != 0.0 || y != 0.0 ) m.translate(x,y);
 			if( _scrollPositionX != 0.0 || _scrollPositionY != 0.0 ) m.translate(_scrollPositionX, _scrollPositionY);
 			
 			return m;

@@ -1,5 +1,5 @@
-package gui.display {
-	import gui.gestures.ISwipeLeftRight;
+package gui.display
+{
 	import gui.core.objects.GuiObject;
 	import gui.core.IScrollable;
 	import gui.core.objects.GuiObjectContainer;
@@ -236,6 +236,93 @@ package gui.display {
 		protected function onScroll( $event:GuiEvent ):void
 		{
 			dispatchEvent( $event.clone() );
+		}
+
+
+		// ------------------------------------------------------------------
+		// --------------------------------------------------- gesture impls
+		// ------------------------------------------------------------------
+		
+		
+		
+		public function gesture_swipePhysics_onMinXOvershoot() : void
+		{
+			trace( "minX overshoot" );
+		}
+
+		public function gesture_swipePhysics_onMaxXOvershoot() : void
+		{
+			trace( "maxX overshoot" );
+		}
+
+		public function gesture_swipePhysics_onMinYOvershoot() : void
+		{
+			trace( "minY overshoot" );
+		}
+
+		public function gesture_swipePhysics_onMaxYOvershoot() : void
+		{
+			trace( "maxY overshoot" );
+		}
+
+		public function get gesture_swipePhysics_x() : Number
+		{
+			return 0;
+		}
+
+		public function get gesture_swipePhysics_y() : Number
+		{
+			return 0;
+		}
+
+		public function get gesture_swipePhysics_constrainX() : Boolean
+		{
+			return true;
+		}
+
+		public function get gesture_swipePhysics_constrainY() : Boolean
+		{
+			return true;
+		}
+
+		public function get gesture_swipePhysics_minX() : Number
+		{
+			return 0;
+		}
+
+		public function get gesture_swipePhysics_maxX() : Number
+		{
+			return 100;
+		}
+
+		public function get gesture_swipePhysics_minY() : Number
+		{
+			return 0;
+		}
+
+		public function get gesture_swipePhysics_maxY() : Number
+		{
+			return 0;
+		}
+
+		public function get gesture_swipePhysics_easing() : Function
+		{
+			return null;
+		}
+
+		public function get gesture_swipePhysics_mass() : Number
+		{
+			return 0;
+		}
+
+		public function set gesture_swipePhysics_x($x : Number) : void
+		{
+
+		}
+
+		public function set gesture_swipePhysics_y($y : Number) : void
+		{
+
 		}
 		
 	}

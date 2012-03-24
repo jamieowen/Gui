@@ -1,5 +1,6 @@
 package gui.core.managers
 {
+	import gui.core.gestures.SwipePhysicsProcessor;
 	import gui.core.gestures.SwipeProcessor;
 	import gui.core.gestures.IGestureProcessor;
 	import gui.core.context.nsGuiInternal;
@@ -36,10 +37,11 @@ package gui.core.managers
 			_context.root.addEventListener(GuiEvent.ADDED_TO_CONTEXT, onContextEvent );
 			_context.root.addEventListener(GuiEvent.REMOVED_FROM_CONTEXT, onContextEvent );
 			
-			// TODO add and remove gesture processors as and when objects appear that use them
+			// TODO add and remove gesture processors as and when objects appear that use them. rather than instantiate from start.
 			// add default gestures.
 			addGesture( new TapProcessor() );
 			addGesture( new SwipeProcessor() );
+			addGesture( new SwipePhysicsProcessor() );
 		}
 		
 		public function dispose():void
@@ -70,7 +72,7 @@ package gui.core.managers
 		
 		private function addObject( $object:GuiObject ):void
 		{
-			// needs to add existing delegates - or traverse the context
+			// TODO : needs to add existing delegates - or traverse the context
 			if( $object is IGestureDelegate )
 			{
 				_delegates.push( $object );

@@ -6,6 +6,6 @@ package gui.gestures {
 	 */
 	public interface ITap extends IGestureDelegate
 	{
-		function onTap():void;
+		function gesture_tap_onTap():void;
 	}
 }

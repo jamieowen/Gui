@@ -17,7 +17,7 @@ package gui.display {
 			skin = "button";
 		}
 		
-		public function onTap():void
+		public function gesture_tap_onTap():void
 		{
 			dispatchEvent( new GuiEvent(GuiEvent.CLICK, this) );
 		}
