@@ -1,5 +1,6 @@
 package gui.core.gestures
 {
+	import flash.utils.getTimer;
 	import flash.geom.Rectangle;
 	import gui.core.objects.GuiObject;
 	import flash.geom.Vector3D;
@@ -25,11 +26,18 @@ package gui.core.gestures
 		
 		// mouse/touch properties
 		private var _velocity:Vector3D;
-		private var _acceleration:Vector3D;
+		// position at _start of interaction ( mouse/touch down )
+		private var _down:Vector3D;
+		// offset from down position
+		private var _offset:Vector3D;
+		// position
+		private var _position:Vector3D;
 		
-		// _start of interaction ( mouse/touch down )
-		private var _start:Vector3D;
-		private var _offset:Vector3D; 
+		// time for euler integration
+		private var _elapsed:Number;
+		// time for mouse/touch input.
+		private var _elapsedIn:Number;
+		
 		
 		private var _processes:Vector.<SwipePhysicsProcess>;
 		
@@ -39,9 +47,12 @@ package gui.core.gestures
 			_processes = new Vector.<SwipePhysicsProcess>();
 			
 			_velocity 		= new Vector3D();
-			_acceleration 	= new Vector3D();
-			_start			= new Vector3D();
+			_down			= new Vector3D();
 			_offset			= new Vector3D();
+			_position		= new Vector3D();
+			
+			_elapsed		= getTimer();
+			_elapsedIn		= getTimer();
 		}
 		
 		public function delegateAdded($delegate : IGestureDelegate) : void
@@ -91,12 +102,16 @@ package gui.core.gestures
 
 		public function update() : void
 		{
+			var time:Number = getTimer();
+			var elapsed:Number = (time-_elapsed)*.001;
+			_elapsed = time;
+			
 			var process:SwipePhysicsProcess;
 			var l:uint = _processes.length;
 			for( var i:uint = 0; i<l; i++ )
 			{
 				process = _processes[i];
-				process.update(_offset);
+				process.update(elapsed,_offset);
 			}
 		}
 		
@@ -112,19 +127,19 @@ package gui.core.gestures
 				
 				if( rect.contains($x, $y) )
 				{
-					// we may already have a swipe process running froma previous interaction
+					// we may already have a swipe process running from a previous interaction
 					process = findProcessFor(obj as ISwipePhysics);
 					if( process == null ) 
 					{
 						process = new SwipePhysicsProcess(obj as ISwipePhysics);
-						_processes.push(process);						
+						_processes.push(process);
 					}
 					
 					process.inputDown();
 				}
 			}
-			
-			_start.setTo($x,$y,0);
+			_offset.setTo(0, 0, 0);
+			_down.setTo($x,$y,0);
 		}
 		
 		/** Set all processes to idle. The update() method will carry on calculating positions and dispose of when not moving. **/
@@ -136,13 +151,25 @@ package gui.core.gestures
 			for( var i:int = 0; i<l; i++ )
 			{
 				process = _processes[i];
-				process.inputUp();
+				// pass input velocity to process
+				process.inputUp(_velocity);
 			}
 		}
 
 		public function inputMove($x : Number, $y : Number) : void
 		{
-			_offset.setTo($x-_start.x, $y-_start.y, 0);
+			_offset.setTo($x-_down.x, $y-_down.y, 0);
+			
+			var time:Number = getTimer();
+			var elapsed:Number = (time - _elapsedIn)/1000;
+			_elapsedIn = time;
+			
+			// mouse velocity
+			_velocity.x = ($x-_position.x)/elapsed;
+			_velocity.y = ($y-_position.y)/elapsed;
+			
+			_position.setTo( $x, $y, 0);
+			//trace( "vel : " + _velocity );
 		}
 
 		public function dispose() : void
@@ -163,34 +190,64 @@ internal class SwipePhysicsProcess
 	// store start position
 	private var _start:Vector3D;
 	
+	// physics
+	private var _position:Vector3D;
+	private var _velocity:Vector3D;
+	
 	public function SwipePhysicsProcess( $delegate:ISwipePhysics)
 	{
 		delegate 	= $delegate;
+		
 		_start 		= new Vector3D();
+		_position	= new Vector3D();
+		_velocity	= new Vector3D();
 	}
 	
 	public function inputDown():void
 	{
 		idle = false;
+		
 		_start.x = delegate.gesture_swipePhysics_x;
 		_start.y = delegate.gesture_swipePhysics_y;
 	}
 	
-	public function inputUp():void
+	/** Apply interation velocity when up **/
+	public function inputUp($mouseVel:Vector3D):void
 	{
 		idle = true;
+		_velocity.setTo( $mouseVel.x*10,$mouseVel.y*10,0);
+		trace( "INPUT UP : " + _velocity );
 	}
 	
-	public function update($offset:Vector3D):void
+	public function update($elapsed:Number, $offset:Vector3D):void
 	{
 		if( idle )
 		{
+			var damping:Number = 1;
+			// physics whilst no interaction.
 			
+			var vel:Vector3D = new Vector3D();
+			var pos:Vector3D = new Vector3D();
+			
+			vel.x = $elapsed*(_velocity.x*damping);
+			vel.y = $elapsed*(_velocity.y*damping);
+			
+			//trace( $elapsed*_velocity.y );
+			_position.x = $elapsed*vel.x+delegate.gesture_swipePhysics_x;
+			_position.y = $elapsed*vel.y+delegate.gesture_swipePhysics_y;
+			
+			delegate.gesture_swipePhysics_x = _position.x; 
+			delegate.gesture_swipePhysics_y = _position.y;
+			
+			//trace( _position );
 		}else
 		{
-			// add offset.
-			delegate.gesture_swipePhysics_x = _start.x + $offset.x;
-			delegate.gesture_swipePhysics_y = _start.y + $offset.y;
+			// just handle offsetting object whist dragging
+			_position.x = _start.x + $offset.x;
+			_position.y = _start.y + $offset.y;
+			
+			delegate.gesture_swipePhysics_x = _position.x; 
+			delegate.gesture_swipePhysics_y = _position.y;
 		}
 	}
 	

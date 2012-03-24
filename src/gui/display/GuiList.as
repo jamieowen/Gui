@@ -1,5 +1,6 @@
 package gui.display
 {
+	import gui.gestures.ISwipePhysics;
 	import gui.core.objects.GuiObject;
 	import gui.core.IScrollable;
 	import gui.core.objects.GuiObjectContainer;
@@ -9,7 +10,7 @@ package gui.display
 	/**
 	 * @author jamieowen
 	 */
-	public class GuiList extends GuiObjectContainer implements IScrollable
+	public class GuiList extends GuiObjectContainer implements IScrollable, ISwipePhysics
 	{
 		/** If the data provider has changed **/		
 		protected var changedData:Boolean;
@@ -145,7 +146,7 @@ package gui.display
 			removeAllChildren();
 			
 			itemContainer.dispose();
-			scrollIndicator.dispose();			
+			scrollIndicator.dispose();
 			
 			itemContainer.removeEventListener(GuiEvent.SCROLL, onScroll);
 			
@@ -267,22 +268,40 @@ package gui.display
 
 		public function get gesture_swipePhysics_x() : Number
 		{
-			return 0;
+			return scrollPositionX;
 		}
 
 		public function get gesture_swipePhysics_y() : Number
 		{
-			return 0;
+			return scrollPositionY;
+		}
+			
+		public function set gesture_swipePhysics_x($x : Number) : void
+		{
+			if( _scrollDirection ==GuiScrollDirection.HORIZONTAL )
+				scrollPositionX = $x;	
+		}
+
+		public function set gesture_swipePhysics_y($y : Number) : void
+		{
+			if( _scrollDirection == GuiScrollDirection.VERTICAL )
+				scrollPositionY = $y;
 		}
 
 		public function get gesture_swipePhysics_constrainX() : Boolean
 		{
-			return true;
+			if( _itemSize == GuiScrollDirection.HORIZONTAL )
+				return true;
+			else
+				return false; // do nothing with constraining x as we are not setting x coordinates when scrolling vertically
 		}
 
 		public function get gesture_swipePhysics_constrainY() : Boolean
 		{
-			return true;
+			if( _itemSize == GuiScrollDirection.VERTICAL )
+				return true;
+			else
+				return false; // do nothing with constraining y as we are not setting y coordinates when scrolling horizontally
 		}
 
 		public function get gesture_swipePhysics_minX() : Number
@@ -292,7 +311,7 @@ package gui.display
 
 		public function get gesture_swipePhysics_maxX() : Number
 		{
-			return 100;
+			return itemContainer.width-width;
 		}
 
 		public function get gesture_swipePhysics_minY() : Number
@@ -302,7 +321,7 @@ package gui.display
 
 		public function get gesture_swipePhysics_maxY() : Number
 		{
-			return 0;
+			return itemContainer.height-height;
 		}
 
 		public function get gesture_swipePhysics_easing() : Function
@@ -315,15 +334,7 @@ package gui.display
 			return 0;
 		}
 
-		public function set gesture_swipePhysics_x($x : Number) : void
-		{
 
-		}
-
-		public function set gesture_swipePhysics_y($y : Number) : void
-		{
-
-		}
 		
 	}
 }
