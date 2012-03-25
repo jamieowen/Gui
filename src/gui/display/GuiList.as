@@ -114,6 +114,8 @@ package gui.display
 		{
 			super();
 			
+			// TODO Support horizontal scrolling.
+			
 			// TODO global clip feature?
 			//nodeAsGroup.clipChildren = true;
 			
@@ -188,15 +190,17 @@ package gui.display
 						item.y = pos;
 						pos+=50;
 					}
+					
+					// set item container height/width
+					itemContainer.width 	= width;
+					itemContainer.height 	= pos;
+					trace( "SET CONTAINER HEIGHT : " + itemContainer.height );
 				}
 			}
 			
 			if( changedSize )
 			{
 				changedSize = false;
-				
-				itemContainer.width = width;
-				itemContainer.height = height;
 				
 				itemContainer.x = itemContainer.y = 0;
 				
@@ -217,7 +221,7 @@ package gui.display
 					scrollIndicator.y 		= height-_scrollIndicatorSize;
 				}
 				
-				// TODO : Update staggering across depths.
+				// TODO : Update staggering problem across depths.
 				// force update
 				// scrollIndicator.update();
 				// itemContainer.update();
@@ -228,7 +232,6 @@ package gui.display
 
 		}
 		
-
 		// ------------------------------------------------------------------
 		// --------------------------------------------------- event handlers
 		// ------------------------------------------------------------------
@@ -239,11 +242,9 @@ package gui.display
 			dispatchEvent( $event.clone() );
 		}
 
-
 		// ------------------------------------------------------------------
 		// --------------------------------------------------- gesture impls
 		// ------------------------------------------------------------------
-		
 		
 		
 		public function gesture_swipePhysics_onMinXOvershoot() : void
@@ -290,7 +291,7 @@ package gui.display
 
 		public function get gesture_swipePhysics_constrainX() : Boolean
 		{
-			if( _itemSize == GuiScrollDirection.HORIZONTAL )
+			if( _scrollDirection == GuiScrollDirection.HORIZONTAL )
 				return true;
 			else
 				return false; // do nothing with constraining x as we are not setting x coordinates when scrolling vertically
@@ -298,7 +299,7 @@ package gui.display
 
 		public function get gesture_swipePhysics_constrainY() : Boolean
 		{
-			if( _itemSize == GuiScrollDirection.VERTICAL )
+			if( _scrollDirection == GuiScrollDirection.VERTICAL )
 				return true;
 			else
 				return false; // do nothing with constraining y as we are not setting y coordinates when scrolling horizontally
@@ -306,22 +307,22 @@ package gui.display
 
 		public function get gesture_swipePhysics_minX() : Number
 		{
-			return 0;
+			return -(itemContainer.width-width);
 		}
 
 		public function get gesture_swipePhysics_maxX() : Number
 		{
-			return itemContainer.width-width;
+			return 0;
 		}
 
 		public function get gesture_swipePhysics_minY() : Number
 		{
-			return 0;
+			return -(itemContainer.height-height);
 		}
 
 		public function get gesture_swipePhysics_maxY() : Number
 		{
-			return itemContainer.height-height;
+			return 0;
 		}
 
 		public function get gesture_swipePhysics_easing() : Function
@@ -333,8 +334,5 @@ package gui.display
 		{
 			return 0;
 		}
-
-
-		
 	}
 }

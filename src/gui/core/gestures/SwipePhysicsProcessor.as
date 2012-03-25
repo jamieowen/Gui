@@ -1,6 +1,5 @@
 package gui.core.gestures
 {
-	import flash.utils.getTimer;
 	import flash.geom.Rectangle;
 	import gui.core.objects.GuiObject;
 	import flash.geom.Vector3D;
@@ -22,21 +21,19 @@ package gui.core.gestures
 	 */
 	public class SwipePhysicsProcessor implements IGestureProcessor
 	{
+		public var damping:Number = .92;
+		
 		private var _delegates:Vector.<ISwipePhysics>;
 		
 		// mouse/touch properties
 		private var _velocity:Vector3D;
+		
 		// position at _start of interaction ( mouse/touch down )
 		private var _down:Vector3D;
 		// offset from down position
 		private var _offset:Vector3D;
 		// position
 		private var _position:Vector3D;
-		
-		// time for euler integration
-		private var _elapsed:Number;
-		// time for mouse/touch input.
-		private var _elapsedIn:Number;
 		
 		
 		private var _processes:Vector.<SwipePhysicsProcess>;
@@ -50,9 +47,6 @@ package gui.core.gestures
 			_down			= new Vector3D();
 			_offset			= new Vector3D();
 			_position		= new Vector3D();
-			
-			_elapsed		= getTimer();
-			_elapsedIn		= getTimer();
 		}
 		
 		public function delegateAdded($delegate : IGestureDelegate) : void
@@ -102,16 +96,12 @@ package gui.core.gestures
 
 		public function update() : void
 		{
-			var time:Number = getTimer();
-			var elapsed:Number = (time-_elapsed)*.001;
-			_elapsed = time;
-			
 			var process:SwipePhysicsProcess;
 			var l:uint = _processes.length;
 			for( var i:uint = 0; i<l; i++ )
 			{
 				process = _processes[i];
-				process.update(elapsed,_offset);
+				process.update(_offset,damping);
 			}
 		}
 		
@@ -160,13 +150,9 @@ package gui.core.gestures
 		{
 			_offset.setTo($x-_down.x, $y-_down.y, 0);
 			
-			var time:Number = getTimer();
-			var elapsed:Number = (time - _elapsedIn)/1000;
-			_elapsedIn = time;
-			
 			// mouse velocity
-			_velocity.x = ($x-_position.x)/elapsed;
-			_velocity.y = ($y-_position.y)/elapsed;
+			_velocity.x = $x-_position.x;
+			_velocity.y = $y-_position.y;
 			
 			_position.setTo( $x, $y, 0);
 			//trace( "vel : " + _velocity );
@@ -183,11 +169,14 @@ import gui.gestures.ISwipePhysics;
 
 internal class SwipePhysicsProcess
 {
-	/** idle is false when the user is interacting with the delegate.  when true the physics calculations continue until the object comes to a stand still **/
-	public var idle:Boolean;
+	/** If interact is true the object is dragged, if false the object has the velocity&damping applied to it. **/
+	public var interact:Boolean;
 	public var delegate:ISwipePhysics;
 	
-	// store start position
+	/** indicates that this should be disposed of. ( interaction and physics have stopped ) **/
+	public var disposable:Boolean;
+	
+	// store start position of delegate
 	private var _start:Vector3D;
 	
 	// physics
@@ -205,48 +194,60 @@ internal class SwipePhysicsProcess
 	
 	public function inputDown():void
 	{
-		idle = false;
+		interact = true;
 		
 		_start.x = delegate.gesture_swipePhysics_x;
 		_start.y = delegate.gesture_swipePhysics_y;
 	}
 	
-	/** Apply interation velocity when up **/
+	/** Apply velocity when interaction up **/
 	public function inputUp($mouseVel:Vector3D):void
 	{
-		idle = true;
-		_velocity.setTo( $mouseVel.x*10,$mouseVel.y*10,0);
-		trace( "INPUT UP : " + _velocity );
+		interact = false;
+		_velocity.setTo( $mouseVel.x,$mouseVel.y,0);
+		
+		_position.x = delegate.gesture_swipePhysics_x;
+		_position.y = delegate.gesture_swipePhysics_y;
 	}
 	
-	public function update($elapsed:Number, $offset:Vector3D):void
+	public function update($offset:Vector3D, $damping:Number):void
 	{
-		if( idle )
+		if( interact )
 		{
-			var damping:Number = 1;
-			// physics whilst no interaction.
-			
-			var vel:Vector3D = new Vector3D();
-			var pos:Vector3D = new Vector3D();
-			
-			vel.x = $elapsed*(_velocity.x*damping);
-			vel.y = $elapsed*(_velocity.y*damping);
-			
-			//trace( $elapsed*_velocity.y );
-			_position.x = $elapsed*vel.x+delegate.gesture_swipePhysics_x;
-			_position.y = $elapsed*vel.y+delegate.gesture_swipePhysics_y;
-			
-			delegate.gesture_swipePhysics_x = _position.x; 
-			delegate.gesture_swipePhysics_y = _position.y;
-			
-			//trace( _position );
-		}else
-		{
-			// just handle offsetting object whist dragging
+			// offset whist dragging
+			// check we are passed constraint and if we are, apply damping to affect how much the user can drag past the constraint point.
 			_position.x = _start.x + $offset.x;
 			_position.y = _start.y + $offset.y;
 			
 			delegate.gesture_swipePhysics_x = _position.x; 
+			delegate.gesture_swipePhysics_y = _position.y;
+		}else
+		{
+			// physics whilst no interaction.
+			_velocity.x*=$damping;
+			_velocity.y*=$damping;
+			
+			_position.x += _velocity.x;
+			_position.y += _velocity.y;
+			
+			// constrain
+			if(delegate.gesture_swipePhysics_constrainX){
+				if( _position.x < delegate.gesture_swipePhysics_minX )
+					_position.x += (delegate.gesture_swipePhysics_minX-_position.x)*$damping;
+				else
+				if( _position.x > delegate.gesture_swipePhysics_maxX )
+					_position.x += (delegate.gesture_swipePhysics_maxX-_position.x)*$damping;
+			}
+			
+			if(delegate.gesture_swipePhysics_constrainY){
+				if( _position.y < delegate.gesture_swipePhysics_minY )
+					_position.y += (delegate.gesture_swipePhysics_minY-_position.y)*.3;
+				else
+				if( _position.y > delegate.gesture_swipePhysics_maxY )
+					_position.y += (delegate.gesture_swipePhysics_maxY-_position.y)*.3;
+			}
+			
+			delegate.gesture_swipePhysics_x = _position.x;
 			delegate.gesture_swipePhysics_y = _position.y;
 		}
 	}
