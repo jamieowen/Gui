@@ -9,7 +9,7 @@ package gui.display
 	*
 	* @author jamieowen
 	*/
-	public class GuiScrollBar extends GuiObjectContainer
+	public class GuiScrollIndicator extends GuiObjectContainer
 	{
 		protected var _target:IScrollable;
 		
@@ -32,7 +32,7 @@ package gui.display
 		/**
 		* Class Constructor Description
 		*/
-		public function GuiScrollBar($target:IScrollable)
+		public function GuiScrollIndicator($target:IScrollable)
 		{
 			_target = $target;
 			

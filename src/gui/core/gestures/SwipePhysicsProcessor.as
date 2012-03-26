@@ -38,8 +38,8 @@ package gui.core.gestures
 		
 		public function SwipePhysicsProcessor()
 		{
-			_delegates = new Vector.<ISwipePhysics>();
-			_processes = new Vector.<SwipePhysicsProcess>();
+			_delegates 		= new Vector.<ISwipePhysics>();
+			_processes 		= new Vector.<SwipePhysicsProcess>();
 			
 			_velocity 		= new Vector3D();
 			_down			= new Vector3D();
@@ -142,6 +142,10 @@ package gui.core.gestures
 				// pass input velocity to process
 				process.inputUp(_velocity);
 			}
+			
+			_offset.setTo(0,0,0);
+			_down.setTo(0,0,0);
+			_velocity.setTo(0,0,0);
 		}
 
 		public function inputMove($x : Number, $y : Number) : void
@@ -153,7 +157,6 @@ package gui.core.gestures
 			_velocity.y = $y-_position.y;
 			
 			_position.setTo( $x, $y, 0);
-			//trace( "vel : " + _velocity );
 		}
 
 		public function dispose() : void
@@ -172,7 +175,7 @@ internal class SwipePhysicsProcess
 	public var delegate:ISwipePhysics;
 	
 	/** indicates that this should be disposed of. ( interaction and physics have stopped ) **/
-	public var disposable:Boolean;
+	//public var disposable:Boolean;
 	
 	// store start position of delegate
 	private var _start:Vector3D;
@@ -196,6 +199,9 @@ internal class SwipePhysicsProcess
 		
 		_overshotX	= false;
 		_overshotY	= false;
+		
+		// TODO : Remove process when no interaction.
+		//disposable  = false;
 	}
 	
 	public function inputDown():void
@@ -226,6 +232,7 @@ internal class SwipePhysicsProcess
 		
 		if( interact )
 		{
+			
 			var maxpull:Number = delegate.gesture_swipePhysics_maxpull;
 			var normalized:Number;
 			// offset whist dragging
@@ -268,6 +275,7 @@ internal class SwipePhysicsProcess
 					}
 					overshoot 	= Math.abs(delegate.gesture_swipePhysics_minY-_position.y);
 					normalized 	= Math.min(overshoot/maxpull,1);
+					
 					_position.y = delegate.gesture_swipePhysics_minY - (overshoot*(normalized*easing));
 				}else
 				if( _position.y > delegate.gesture_swipePhysics_maxY )
@@ -278,11 +286,12 @@ internal class SwipePhysicsProcess
 					}
 					overshoot 	= Math.abs(delegate.gesture_swipePhysics_maxY-_position.y);
 					normalized 	= Math.min(overshoot/maxpull,1);
+					
 					_position.y = delegate.gesture_swipePhysics_maxY + (overshoot*(normalized*easing));
 				}else
-					_overshotY = false;			
+					_overshotY = false;
 			}
-
+			
 			delegate.gesture_swipePhysics_x = _position.x;
 			delegate.gesture_swipePhysics_y = _position.y;
 		}else
@@ -292,6 +301,13 @@ internal class SwipePhysicsProcess
 			// physics whilst no interaction.
 			_velocity.x*=damping;
 			_velocity.y*=damping;
+			
+			// round velocity.
+			if( Math.abs(_velocity.x)<.001 )
+				_velocity.x = 0;
+				
+			if( Math.abs(_velocity.y)<.001 )
+				_velocity.y = 0;
 			
 			_position.x += _velocity.x;
 			_position.y += _velocity.y;

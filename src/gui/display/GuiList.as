@@ -19,7 +19,7 @@ package gui.display
 		protected var itemContainer:GuiContainer;
 		
 		/** The scroll indicator **/
-		protected var scrollIndicator:GuiScrollBar;
+		//protected var scrollIndicator:GuiScrollIndicator;
 		
 		/** The scroll direction **/
 		private var _scrollDirection:uint;
@@ -122,8 +122,9 @@ package gui.display
 			itemContainer = new GuiContainer();
 			addChild( itemContainer );
 			
-			scrollIndicator = new GuiScrollBar(this);
-			addChild( scrollIndicator );
+			// TODO Scrollindicator removed for now.
+			//scrollIndicator = new GuiScrollIndicator(this);
+			//addChild( scrollIndicator );
 			
 			itemContainer.addEventListener( GuiEvent.SCROLL, onScroll, false, 0, true );
 			
@@ -137,7 +138,7 @@ package gui.display
 			
 			skin 				 = "guiList";
 			itemContainer.skin 	 = "guiList.items";
-			scrollIndicator.skin = "guiList.indicator";
+			//scrollIndicator.skin = "guiList.indicator";
 		}
 		
 		/** Disposes of the List**/
@@ -148,12 +149,12 @@ package gui.display
 			removeAllChildren();
 			
 			itemContainer.dispose();
-			scrollIndicator.dispose();
+			//scrollIndicator.dispose();
 			
 			itemContainer.removeEventListener(GuiEvent.SCROLL, onScroll);
 			
 			itemContainer 	= null;
-			scrollIndicator = null;
+			//scrollIndicator = null;
 		}
 		
 		/** Update after size adjust or data change. **/
@@ -206,19 +207,19 @@ package gui.display
 				
 				if( _scrollDirection == GuiScrollDirection.VERTICAL )
 				{
-					scrollIndicator.width 	= _scrollIndicatorSize;
-					scrollIndicator.height 	= height-6;
+					//scrollIndicator.width 	= _scrollIndicatorSize;
+					//scrollIndicator.height 	= height-6;
 					
-					scrollIndicator.x 		= (width-_scrollIndicatorSize)-3;
-					scrollIndicator.y 		= 3;
+					//scrollIndicator.x 		= (width-_scrollIndicatorSize)-3;
+					//scrollIndicator.y 		= 3;
 				}else
 				if( _scrollDirection == GuiScrollDirection.HORIZONTAL )
 				{
-					scrollIndicator.width 	= width;
-					scrollIndicator.height 	= _scrollIndicatorSize;
+					//scrollIndicator.width 	= width;
+					//scrollIndicator.height 	= _scrollIndicatorSize;
 					
-					scrollIndicator.x 		= 0;
-					scrollIndicator.y 		= height-_scrollIndicatorSize;
+					//scrollIndicator.x 		= 0;
+					//scrollIndicator.y 		= height-_scrollIndicatorSize;
 				}
 				
 				// TODO : Update staggering problem across depths.
@@ -226,7 +227,7 @@ package gui.display
 				// scrollIndicator.update();
 				// itemContainer.update();
 				
-				trace( "scroll : " + width + " " + height + " " + scrollIndicator.width + " " + scrollIndicator.height );
+				//trace( "scroll : " + width + " " + height + " " + scrollIndicator.width + " " + scrollIndicator.height );
 			}
 			
 
