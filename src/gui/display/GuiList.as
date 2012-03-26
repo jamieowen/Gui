@@ -325,14 +325,23 @@ package gui.display
 			return 0;
 		}
 
-		public function get gesture_swipePhysics_easing() : Function
+		public function get gesture_swipePhysics_easing() : Number
 		{
-			return null;
+			return .32;
+		}
+		
+		public function get gesture_swipePhysics_maxpull() : Number
+		{
+			if( _scrollDirection == GuiScrollDirection.HORIZONTAL ){
+				return width*.5;
+			}else{
+				return height*.5;
+			}
 		}
 
-		public function get gesture_swipePhysics_mass() : Number
+		public function get gesture_swipePhysics_damping() : Number
 		{
-			return 0;
+			return .92;
 		}
 	}
 }

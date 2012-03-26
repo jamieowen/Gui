@@ -19,8 +19,9 @@ package gui.gestures
 		function get gesture_swipePhysics_minY():Number;
 		function get gesture_swipePhysics_maxY():Number;
 		
-		function get gesture_swipePhysics_easing():Function // easing to use when over snap
-		function get gesture_swipePhysics_mass():Number;
+		function get gesture_swipePhysics_easing():Number // easing to use when past constraint and dragging over constraint
+		function get gesture_swipePhysics_maxpull():Number; // the pull distance to gradulally apply easing when past the constraint point.
+		function get gesture_swipePhysics_damping():Number; // damping to use when not interacting
 		
 		function gesture_swipePhysics_onMinXOvershoot():void; // triggers event when a swipe overshoots a constraint
 		function gesture_swipePhysics_onMaxXOvershoot():void;

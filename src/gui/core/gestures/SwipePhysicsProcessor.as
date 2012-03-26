@@ -21,8 +21,6 @@ package gui.core.gestures
 	 */
 	public class SwipePhysicsProcessor implements IGestureProcessor
 	{
-		public var damping:Number = .92;
-		
 		private var _delegates:Vector.<ISwipePhysics>;
 		
 		// mouse/touch properties
@@ -101,7 +99,7 @@ package gui.core.gestures
 			for( var i:uint = 0; i<l; i++ )
 			{
 				process = _processes[i];
-				process.update(_offset,damping);
+				process.update(_offset);
 			}
 		}
 		
@@ -183,6 +181,11 @@ internal class SwipePhysicsProcess
 	private var _position:Vector3D;
 	private var _velocity:Vector3D;
 	
+	// flags for if we have triggered overshoot event
+	private var _overshotX:Boolean;
+	private var _overshotY:Boolean;
+
+	
 	public function SwipePhysicsProcess( $delegate:ISwipePhysics)
 	{
 		delegate 	= $delegate;
@@ -190,6 +193,9 @@ internal class SwipePhysicsProcess
 		_start 		= new Vector3D();
 		_position	= new Vector3D();
 		_velocity	= new Vector3D();
+		
+		_overshotX	= false;
+		_overshotY	= false;
 	}
 	
 	public function inputDown():void
@@ -206,26 +212,86 @@ internal class SwipePhysicsProcess
 		interact = false;
 		_velocity.setTo( $mouseVel.x,$mouseVel.y,0);
 		
+		// reset overshoot flasgs - to retrigger overshoot events on delegates
+		_overshotX = false;
+		_overshotY = false;
+		
 		_position.x = delegate.gesture_swipePhysics_x;
 		_position.y = delegate.gesture_swipePhysics_y;
 	}
 	
-	public function update($offset:Vector3D, $damping:Number):void
+	public function update($offset:Vector3D):void
 	{
+		var easing:Number = delegate.gesture_swipePhysics_easing;
+		
 		if( interact )
 		{
+			var maxpull:Number = delegate.gesture_swipePhysics_maxpull;
+			var normalized:Number;
 			// offset whist dragging
-			// check we are passed constraint and if we are, apply damping to affect how much the user can drag past the constraint point.
 			_position.x = _start.x + $offset.x;
 			_position.y = _start.y + $offset.y;
 			
-			delegate.gesture_swipePhysics_x = _position.x; 
+			var overshoot:Number;	
+			// check we are passed constraint and if we are, apply damping to affect how much the user can drag past the constraint point.
+			if( delegate.gesture_swipePhysics_constrainX )
+			{
+				if( _position.x < delegate.gesture_swipePhysics_minX )
+				{
+					if( !_overshotX ){
+						_overshotX = true;
+						delegate.gesture_swipePhysics_onMinXOvershoot();
+					}
+					overshoot 	= Math.abs(delegate.gesture_swipePhysics_minX-_position.x);
+					normalized 	= Math.min(overshoot/maxpull,1);
+					_position.x = delegate.gesture_swipePhysics_minX - (overshoot*(normalized*easing));
+				}else
+				if( _position.x > delegate.gesture_swipePhysics_maxX )
+				{
+					if( !_overshotX ){
+						_overshotX = true;
+						delegate.gesture_swipePhysics_onMaxXOvershoot();
+					}
+					overshoot 	= Math.abs(delegate.gesture_swipePhysics_maxX-_position.x);
+					normalized 	= Math.min(overshoot/maxpull,1);
+					_position.x = delegate.gesture_swipePhysics_maxX + (overshoot*(normalized*easing));
+				}else
+					_overshotY = false;
+			}
+			if( delegate.gesture_swipePhysics_constrainY )
+			{
+				if( _position.y < delegate.gesture_swipePhysics_minY )
+				{
+					if( !_overshotY ){
+						_overshotY = true;
+						delegate.gesture_swipePhysics_onMinYOvershoot();
+					}
+					overshoot 	= Math.abs(delegate.gesture_swipePhysics_minY-_position.y);
+					normalized 	= Math.min(overshoot/maxpull,1);
+					_position.y = delegate.gesture_swipePhysics_minY - (overshoot*(normalized*easing));
+				}else
+				if( _position.y > delegate.gesture_swipePhysics_maxY )
+				{
+					if( !_overshotY ){
+						_overshotY = true;
+						delegate.gesture_swipePhysics_onMaxYOvershoot();
+					}
+					overshoot 	= Math.abs(delegate.gesture_swipePhysics_maxY-_position.y);
+					normalized 	= Math.min(overshoot/maxpull,1);
+					_position.y = delegate.gesture_swipePhysics_maxY + (overshoot*(normalized*easing));
+				}else
+					_overshotY = false;			
+			}
+
+			delegate.gesture_swipePhysics_x = _position.x;
 			delegate.gesture_swipePhysics_y = _position.y;
 		}else
 		{
+			var damping:Number = delegate.gesture_swipePhysics_damping;
+			
 			// physics whilst no interaction.
-			_velocity.x*=$damping;
-			_velocity.y*=$damping;
+			_velocity.x*=damping;
+			_velocity.y*=damping;
 			
 			_position.x += _velocity.x;
 			_position.y += _velocity.y;
@@ -233,18 +299,18 @@ internal class SwipePhysicsProcess
 			// constrain
 			if(delegate.gesture_swipePhysics_constrainX){
 				if( _position.x < delegate.gesture_swipePhysics_minX )
-					_position.x += (delegate.gesture_swipePhysics_minX-_position.x)*$damping;
+					_position.x += (delegate.gesture_swipePhysics_minX-_position.x)*easing;
 				else
 				if( _position.x > delegate.gesture_swipePhysics_maxX )
-					_position.x += (delegate.gesture_swipePhysics_maxX-_position.x)*$damping;
+					_position.x += (delegate.gesture_swipePhysics_maxX-_position.x)*easing;
 			}
 			
 			if(delegate.gesture_swipePhysics_constrainY){
 				if( _position.y < delegate.gesture_swipePhysics_minY )
-					_position.y += (delegate.gesture_swipePhysics_minY-_position.y)*.3;
+					_position.y += (delegate.gesture_swipePhysics_minY-_position.y)*easing;
 				else
 				if( _position.y > delegate.gesture_swipePhysics_maxY )
-					_position.y += (delegate.gesture_swipePhysics_maxY-_position.y)*.3;
+					_position.y += (delegate.gesture_swipePhysics_maxY-_position.y)*easing;
 			}
 			
 			delegate.gesture_swipePhysics_x = _position.x;
@@ -256,5 +322,7 @@ internal class SwipePhysicsProcess
 	{
 		delegate 	= null;
 		_start 		= null;
+		_position	= null;
+		_velocity	= null;
 	}
 }
